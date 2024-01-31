@@ -1,0 +1,348 @@
+{
+    "streams":
+    {
+        "video-streams":
+        [
+            {
+                "id": "video-1080p",
+                "source-id": "ndi_0",
+                "video-codec": "avc",
+                "profile": "high",
+                "level": "auto",
+                "width": 1920,
+                "height": 1080,
+                "fps-n": 25,
+                "fps-d": 1,
+                "gop-period-n": 2,
+                "gop-period-d": 1,
+                "num-b-frames": 3,
+                "b-frame-reference": false,
+                "bitrate-mode": "auto",
+                "bitrate": 4100000,
+                "max-bitrate": 4100000,
+                "transfer-characteristics": "auto",
+                "color-matrix-coefficients": "auto",
+                "color-primaries": "auto",
+                "mastering-display": "auto",
+                "max-cll-fall": "auto",
+                "time-code": false,
+                "par-n": 1,
+                "par-d": 1
+            },
+            {
+                "id": "video-720p",
+                "source-id": "ndi_0",
+                "video-codec": "avc",
+                "profile": "high",
+                "level": "auto",
+                "width": 1280,
+                "height": 720,
+                "fps-n": 25,
+                "fps-d": 1,
+                "gop-period-n": 2,
+                "gop-period-d": 1,
+                "num-b-frames": 3,
+                "b-frame-reference": false,
+                "bitrate-mode": "auto",
+                "bitrate": 2200000,
+                "max-bitrate": 2200000,
+                "transfer-characteristics": "auto",
+                "color-matrix-coefficients": "auto",
+                "color-primaries": "auto",
+                "mastering-display": "auto",
+                "max-cll-fall": "auto",
+                "time-code": false,
+                "par-n": 1,
+                "par-d": 1
+            },
+            {
+                "id": "video-480p",
+                "source-id": "ndi_0",
+                "video-codec": "avc",
+                "profile": "high",
+                "level": "auto",
+                "width": 848,
+                "height": 480,
+                "fps-n": 25,
+                "fps-d": 1,
+                "gop-period-n": 2,
+                "gop-period-d": 1,
+                "num-b-frames": 3,
+                "b-frame-reference": false,
+                "bitrate-mode": "auto",
+                "bitrate": 1000000,
+                "max-bitrate": 1000000,
+                "transfer-characteristics": "auto",
+                "color-matrix-coefficients": "auto",
+                "color-primaries": "auto",
+                "mastering-display": "auto",
+                "max-cll-fall": "auto",
+                "time-code": false,
+                "par-n": 1,
+                "par-d": 1
+            },
+            {
+                "id": "video-360p",
+                "source-id": "ndi_0",
+                "video-codec": "avc",
+                "profile": "main",
+                "level": "auto",
+                "width": 640,
+                "height": 360,
+                "fps-n": 25,
+                "fps-d": 1,
+                "gop-period-n": 2,
+                "gop-period-d": 1,
+                "num-b-frames": 3,
+                "b-frame-reference": false,
+                "bitrate-mode": "auto",
+                "bitrate": 550000,
+                "max-bitrate": 550000,
+                "transfer-characteristics": "auto",
+                "color-matrix-coefficients": "auto",
+                "color-primaries": "auto",
+                "mastering-display": "auto",
+                "max-cll-fall": "auto",
+                "time-code": false,
+                "par-n": 1,
+                "par-d": 1
+            },
+            {
+                "id": "video-240p",
+                "source-id": "ndi_0",
+                "video-codec": "avc",
+                "profile": "main",
+                "level": "auto",
+                "width": 426,
+                "height": 240,
+                "fps-n": 25,
+                "fps-d": 1,
+                "gop-period-n": 2,
+                "gop-period-d": 1,
+                "num-b-frames": 3,
+                "b-frame-reference": false,
+                "bitrate-mode": "auto",
+                "bitrate": 200000,
+                "max-bitrate": 200000,
+                "transfer-characteristics": "auto",
+                "color-matrix-coefficients": "auto",
+                "color-primaries": "auto",
+                "mastering-display": "auto",
+                "max-cll-fall": "auto",
+                "time-code": false,
+                "par-n": 1,
+                "par-d": 1
+            }
+        ],
+        "audio-streams":
+        [
+            {
+                "id": "audio-en",
+                "source-id": "ndi_0",
+                "source-channel-map" : "1,2",
+                "audio-codec": "aac",
+                "sampling-rate": 44100,
+                "bitrate-mode": "auto",
+                "bitrate": 128000,
+                "channel-mode": "auto",
+                "profile": "auto",
+                "language": "en",
+                "channels": "2"
+            }
+        ],
+        "subtitles-streams":
+        [
+            {
+                "id": "cc1",
+                "source-id": "ndi_0",
+                "type": "cc",
+                "source-stream" : "CC1",
+                "language": "en"
+            }
+        ],
+        "mux-streams":
+        [
+            {
+                "id": "mux-1080p",
+                "source-id": [ "video-1080p", "audio-en" ],
+                "container-format": "mpegts",
+                "mpegts-settings":
+                {
+                    "pid-map": [ 256, 257 ]
+                }
+            },
+            {
+                "id": "mux-720p",
+                "source-id": [ "video-720p", "audio-en" ],
+                "container-format": "mpegts",
+                "mpegts-settings":
+                {
+                    "pid-map": [ 256, 257 ]
+                }
+            },
+            {
+                "id": "mux-480p",
+                "source-id": [ "video-480p", "audio-en" ],
+                "container-format": "mpegts",
+                "mpegts-settings":
+                {
+                    "pid-map": [ 256, 257 ]
+                }
+            },
+            {
+                "id": "mux-360p",
+                "source-id": [ "video-360p", "audio-en" ],
+                "container-format": "mpegts",
+                "mpegts-settings":
+                {
+                    "pid-map": [ 256, 257 ]
+                }
+            },
+            {
+                "id": "mux-240p",
+                "source-id": [ "video-240p", "audio-en" ],
+                "container-format": "mpegts",
+                "mpegts-settings":
+                {
+                    "pid-map": [ 256, 257 ]
+                }
+            }
+        ]
+    },
+    "hls-settings":
+    {
+        "variants":
+        [
+            {
+                "id": "1080p",
+                "source-id": "mux-1080p",
+                "cc-group":"cc",
+                "hls-version": 3,
+                "playlist-type": "live",
+                "playlist-content-encoding": "gzip",
+                "playlist-mime-type": "application/vnd.apple.mpegurl",
+                "segment-mime-type": "video/mp2t",
+                "segment-duration-n": 6,
+                "segment-duration-d": 1,
+                "window-duration": 40000,
+                "media-playlist-template": "%{ID}/index.m3u8",
+                "segment-template": "seg_%{SEQ_ID}",
+                "absolute-url-prefix": "https://www.example.com/",
+                "use-absolute-media-playlist-url": false,
+                "use-absolute-segment-url": false,
+                "program-date-time-insertion": "roll-up"
+            },
+            {
+                "id": "720p",
+                "source-id": "mux-720p",
+                "cc-group":"cc",
+                "hls-version": 3,
+                "playlist-type": "live",
+                "playlist-content-encoding": "gzip",
+                "playlist-mime-type": "application/vnd.apple.mpegurl",
+                "segment-mime-type": "video/mp2t",
+                "segment-duration-n": 6,
+                "segment-duration-d": 1,
+                "window-duration": 40000,
+                "media-playlist-template": "%{ID}/index.m3u8",
+                "segment-template": "seg_%{SEQ_ID}",
+                "absolute-url-prefix": "https://www.example.com/",
+                "use-absolute-media-playlist-url": false,
+                "use-absolute-segment-url": false,
+                "program-date-time-insertion": "roll-up"
+            },
+            {
+                "id": "480p",
+                "source-id": "mux-480p",
+                "cc-group":"cc",
+                "hls-version": 3,
+                "playlist-type": "live",
+                "playlist-content-encoding": "gzip",
+                "playlist-mime-type": "application/vnd.apple.mpegurl",
+                "segment-mime-type": "video/mp2t",
+                "segment-duration-n": 6,
+                "segment-duration-d": 1,
+                "window-duration": 40000,
+                "media-playlist-template": "%{ID}/index.m3u8",
+                "segment-template": "seg_%{SEQ_ID}",
+                "absolute-url-prefix": "https://www.example.com/",
+                "use-absolute-media-playlist-url": false,
+                "use-absolute-segment-url": false,
+                "program-date-time-insertion": "roll-up"
+            },
+            {
+                "id": "360p",
+                "source-id": "mux-360p",
+                "cc-group":"cc",
+                "hls-version": 3,
+                "playlist-type": "live",
+                "playlist-content-encoding": "gzip",
+                "playlist-mime-type": "application/vnd.apple.mpegurl",
+                "segment-mime-type": "video/mp2t",
+                "segment-duration-n": 6,
+                "segment-duration-d": 1,
+                "window-duration": 40000,
+                "media-playlist-template": "%{ID}/index.m3u8",
+                "segment-template": "seg_%{SEQ_ID}",
+                "absolute-url-prefix": "https://www.example.com/",
+                "use-absolute-media-playlist-url": false,
+                "use-absolute-segment-url": false,
+                "program-date-time-insertion": "roll-up"
+            },
+            {
+                "id": "240p",
+                "source-id": "mux-240p",
+                "cc-group":"cc",
+                "hls-version": 3,
+                "playlist-type": "live",
+                "playlist-content-encoding": "gzip",
+                "playlist-mime-type": "application/vnd.apple.mpegurl",
+                "segment-mime-type": "video/mp2t",
+                "segment-duration-n": 6,
+                "segment-duration-d": 1,
+                "window-duration": 40000,
+                "media-playlist-template": "%{ID}/index.m3u8",
+                "segment-template": "seg_%{SEQ_ID}",
+                "absolute-url-prefix": "https://www.example.com/",
+                "use-absolute-media-playlist-url": false,
+                "use-absolute-segment-url": false,
+                "program-date-time-insertion": "roll-up"
+            }
+        ],
+        "renditions" :
+        [
+            {
+                "id" : "en-cc1",
+                "source-id" : "cc1",
+                "group-id": "cc",
+                "default" : true,
+                "autoselect" : true,
+                "name" : "English"
+            }
+        ],
+        "deliveries":
+        [
+            {
+                "id": "delivery-0",
+                "source-id": [ "240p", "360p", "480p", "720p", "1080p" ],
+                "hls-version": 3,
+                "master-playlist": "master.m3u8",
+                "playlist-content-encoding": "gzip",
+                "playlist-mime-type": "application/vnd.apple.mpegurl"
+            }
+        ]
+    },
+    "destination":
+    [
+        {
+            "id": "sink-1",
+            "source-id" : [ "delivery-0" ],
+            "type": "s3",
+            "s3-settings":
+            {
+                "s3-path": "s3://delta-tarang/tarang_srt/",
+                "region": "ap-south-1"
+            }
+        }
+    ]
+}
