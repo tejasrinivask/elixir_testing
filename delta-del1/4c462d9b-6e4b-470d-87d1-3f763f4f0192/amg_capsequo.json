@@ -1,0 +1,93 @@
+{
+    "defaults": {
+        "alta": {
+            "provider": "alta",
+            "captioner": "manual",
+            "eeg_user": "(eegcloud_username)",
+            "eeg_password": "(eegcloud_password)",
+            "lexi_instance_api": "https://eegcloud.tv/speech-recognition/live/v2/instances/(instance_id)",
+            "num_audio_channels": 1,
+            "audio_sample_bits": 16,
+            "audio_sample_rate": 48000,
+            "output_cc_coding": "atsc",
+            "testcc": "on",
+            "warn_level": 1,
+            "audio_sender_ttl": 4,
+            "audio_mix": "1",
+            "alta_log_history": 0,
+            "server": "(ip)",
+            "username": "(alta_username)",
+            "password": "(alta_password)",
+            "icap_company": "(icap_company_cred)",
+            "icap_user": "(icap_username)",
+            "icap_password": "(icap_password)",
+            "output_data_stream": "(udp|rtp)://(ip):(port)",
+            "input_audio_stream": "(udp|rtp)://(ip):(port)",
+            "audio_sender_iface": "eth0",
+            "enable_caption_stop_event": true
+        },
+        "google": {
+            "provider": "google",
+            "num_audio_channels": 1,
+            "audio_sample_bits": 16,
+            "audio_sample_rate": 16000,
+            "single_utterance": false,
+            "enable_interim_results": true,
+            "enable_automatic_punctuation": true,
+            "enable_word_time_offsets": false,
+            "max_alternatives": 1,
+            "profanity_filter": true,
+            "language_code": "en-US",
+            "model": "video",
+            "use_enhanced": false,
+            "stability": 0.85,
+            "transcript_word_count_sensitivity": 4,
+            "transcript_similarity_percentage": 90,
+            "output_mode" : "srt",
+            "max_interword_duration_ms": 800,
+            "max_subtitle_line_duration_ms": 1500,
+            "max_chars_in_subrow": 30,
+            "word_duration_coefficient": 1.5,
+            "enable_all_caps": true,
+            "enable_caption_stop_event": true
+        }
+    },
+    "profiles": {
+        "alta-1": {
+            "provider": "alta",
+            "captioner": "manual",
+            "server": "(ip)",
+            "username": "(alta_username)",
+            "password": "(alta_password)",
+            "icap_company": "(icap_company_cred)",
+            "icap_user": "(icap_username)",
+            "icap_password": "(icap_password)",
+            "output_data_stream": "(udp|rtp)://(ip):(port)",
+            "input_audio_stream": "(udp|rtp)://(ip):(port)"
+        },
+        "lexi-v2": {
+            "provider": "alta",
+            "captioner": "lexi",
+            "eeg_user": "(eegcloud_username)",
+            "eeg_password": "(eegcloud_password)",
+            "lexi_instance_api": "https://eegcloud.tv/speech-recognition/live/v2/instances/(instance_id)",
+            "testcc": "off",
+            "server": "(ip)",
+            "username": "(alta_username)",
+            "password": "(alta_password)",
+            "icap_company": "(icap_company_cred)",
+            "icap_user": "(icap_username)",
+            "icap_password": "(icap_password)",
+            "output_data_stream": "(udp|rtp)://(ip):(port)",
+            "input_audio_stream": "(udp|rtp)://(ip):(port)"
+        },
+        "google-vanc-1": {
+            "provider": "google",
+            "output_mode" : "vanc"
+        },
+        "google-srt-1": {
+            "provider": "google",
+            "output_mode" : "srt"
+        }
+    }
+}
