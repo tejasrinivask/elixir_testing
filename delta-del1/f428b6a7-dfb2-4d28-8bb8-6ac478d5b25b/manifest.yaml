@@ -535,7 +535,7 @@ metadata:
   name: player-elixir-001-player
   namespace: delta-del1-playout
 spec:
-  replicas: 0
+  replicas: 1
   serviceName: player
   selector:
     matchLabels:
