@@ -672,7 +672,7 @@ spec:
         - name: SDC_METRICS_PORT
           value: "38901"
         - name: SERVICE_DISCOVERY_STORE_S3_BUCKET_NAME
-          value: "amagicloud-sdc-delta"
+          value: "amagicloud-sdc-delta1"
         - name: PLAYER1_CONFIG_URL
           value: "file:///mnt/configs/player/ops_config.ini"
         - name: RAMFS_ENABLED
