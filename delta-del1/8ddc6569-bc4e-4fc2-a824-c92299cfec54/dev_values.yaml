@@ -1,0 +1,54 @@
+# Dev Only Section
+# Do Not Change
+
+#PLAYER_CONFIGS
+podConfig1Key: PLAYER
+
+# Starting Port Numbers for services
+inputClusterIpStartPortNum: 8200
+outputClusterIpStartPortNum: 8300
+
+inputLoadBalancerStartPortNum: 8400
+outputLoadBalancerStartPortNum: 8500
+
+# Aws credentials
+awsAccessKeyId:
+awsSecretAccessKey:
+
+# Root directory for cetral repository
+serviceDiscoveryRepoRootDirectory: amagicloud-sdc-delta1
+
+# port number for prometheus
+metricsFwdPromPortNum: 8600
+
+# metrics port for various applications inside the player pod
+cacherMetricsPromPortNum: 28100
+plshMetricsPromPortNum: 28101
+
+# port number for SDC gRPC Server
+sdcGrpcServerPortNum: 8700
+
+PlayerMetricsPromPortNum: 37901
+
+SDCMetricsPromPortNum: 38901
+
+# Load balancer is brought up only when publicOutputProtocol
+# is configured to srts, or publicInputProtocol is configured
+# to srts/udp/rtp
+loadBalancerType: public
+
+# Storage class Name
+# Do not change this unless you know what you are doing
+storageClassName: topology-aware-storage
+
+# node taint name
+# Do not change this unless you know what you are doing
+nodeTaintName: device-a
+
+# pod label
+# Used to co-locate pods on the same node
+podLabel:
+
+# Priority class
+# Can only be high-priority, normal-priority or placeholder-priority
+priorityClassName:
