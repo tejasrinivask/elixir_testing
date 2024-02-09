@@ -16,7 +16,7 @@ awsAccessKeyId:
 awsSecretAccessKey:
 
 # Root directory for cetral repository
-serviceDiscoveryRepoRootDirectory: amagicloud-sdc-delta
+serviceDiscoveryRepoRootDirectory: amagicloud-sdc-delta1
 
 # port number for prometheus
 metricsFwdPromPortNum: 8600
