@@ -1,0 +1,150 @@
+# cloudProvider can be aws/gcp
+cloudProvider: aws 
+
+# Unique ID for the POD 
+# recommended convension: 
+# <Environment Type>-<customerID>-<FeedID>-<HeadendID>-<POD Type>
+# POD type can be : Player, Switcher, Doordarshan
+# Environment type can be: production, test, devQA, staging etc
+# Eg: production-NBCU-HD1080i50-nbcu001-player
+# ONLY lowercase albhabets and '-' are allowed.
+uuid: elixir-001-player
+
+# POD type: player, dd, switcher are allowed
+# Only player is allowed in this file. Do not change this
+podType: player
+
+# used for playout from local cache
+# true or false is allowed only
+# when set false (case sensitive) ramfs is disabled
+enableRamfsPlayout: false
+# set this value according to define
+# ramfs space for caching asset files
+ramfsMemSize: 4Gi
+
+enablePlsh: false
+
+# used for controlling bringup of metrics forwarder
+# container which forwards the metrics from other 
+# containers in the pod
+enableMetricsForwarding: true
+
+# Config for service monitor
+serviceMonitorEnabled: true
+
+# logging mode for player
+# supported modes - stdout, stdout_and_file, file
+loggingMode: file
+
+## AWS Availability Zone
+availabilityZone: ap-south-1a 
+
+## halt/resume playout, no of replicas for pod in statefulset
+replicaCount: 1
+
+## enable/disable file logging for tardis and switcher
+fileLogging: false
+
+# UUID of the peer POD to receive the input stream
+peerInputUuid: 
+
+# UUID of the peer POD to deliver the stream
+peerOutputUuid:
+
+# UUID of the vpcpeer POD to receive the input stream
+vpcPeerInputUuid: 
+
+# UUID of the vpcpeer POD to deliver the stream
+vpcPeerOutputUuid:
+
+# URL for peer output stream protocol
+peerOutputProtocol: srts
+
+# URL for public output stream protocol
+publicOutputProtocol: 
+
+# URL for vpcpeer output stream protocol
+vpcPeerOutputProtocol: 
+
+# Hosted zone id
+# This is used to create the route 53 DNS entries
+awsHostedZoneId:
+
+# URL for peer input stream protocol
+peerInputProtocol: 
+
+# URL for public input stream protocol
+publicInputProtocol: 
+
+# URL for vpcpeer input stream protocol
+vpcPeerInputProtocol: 
+
+# Number of sources per CPLive Event ID.
+cpLiveSourceCount: 
+
+# Enable/Disable CPLive Unique Egress Allocation
+# true - Enable and false - Disable. Default is false
+enableCpLiveUniqueEgressAllocation:
+
+# ZIXI feeder license key
+zixiFeederLicenceKey: 
+
+# Fluentd endpoint to push the logs
+fluentdEndpoint: 
+
+# Capsequo endpoint for the captions
+capsequoEndpoint: 
+
+# Loki endpoint for logs
+lokiEndpoint:
+
+# Name for the ingress controller
+ingressControllerName: 
+
+# Name space for the ingress controller
+ingressControllerNamespace: 
+
+# enable/disable nats
+enableNats: true
+
+# Nats bucket name
+natsBucket:
+
+# Nats server endpoint urls
+# sample: nats://nats.nats.svc.cluster.local:4222, nats://nats.nats.svc.cluster.local:4223
+natsServerUrls:
+
+# HLS bucket credentials
+hlsBucketAccessKeyId:
+hlsBucketSecretAccessKey:
+
+# enable/disable uploading player logs to Karma S3 bucket
+# can be true/false
+enableUploadingLogsToKarmaS3: true
+
+# Enable Soft Limits
+# If set to true, CPU and memory limits will
+# not be set for primary containers
+enableSoftLimits: false
+
+#Configs for PLAYER
+playerMemSize: 12Gi
+playerCpuSize: 8
+playerEbsSize: 200Gi
+
+#Configs for TARDIS
+tardisMemSize: 1Gi
+tardisCpuSize: 500m
+tardisEbsSize: 25Gi
+
+#Configs for TARANG
+tarangMemSize: 8Gi
+tarangCpuSize: 8
+
+# Labels for the pod, defined in labels.yaml
+# Don't add any key-value pair in this default file
+labels:
+
+# Container registry endpoints used to pull docker images
+registry:
+  private: 109667701036.dkr.ecr.us-east-1.amazonaws.com/
