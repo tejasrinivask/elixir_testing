@@ -40,7 +40,7 @@ loggingMode: file
 availabilityZone: ap-south-1a 
 
 ## halt/resume playout, no of replicas for pod in statefulset
-replicaCount: 0
+replicaCount: 1
 
 ## enable/disable file logging for tardis and switcher
 fileLogging: false
