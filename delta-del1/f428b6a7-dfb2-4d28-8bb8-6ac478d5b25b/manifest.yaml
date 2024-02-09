@@ -1,0 +1,844 @@
+---
+# Source: cp-playout/templates/sa.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+ name: elixir-001-player-nlbget
+ namespace: delta-del1-playout
+ labels:   
+   app.kubernetes.io/name: "playout"
+   guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+   manager: "elixir"
+   podType: "player"
+---
+# Source: cp-playout/templates/common_config_map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elixir-001-player-common-configmap
+  namespace: delta-del1-playout
+  labels:    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"
+data:
+---
+# Source: cp-playout/templates/config_map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elixir-001-player-configmap
+  namespace: delta-del1-playout
+  labels:    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"
+data:
+  ops_config.ini: |-
+    [BusinessConfigurations]
+    # ###########################################################
+    # Player mode
+    # ###########################################################
+    PlayerMode                                 = player
+    # ###########################################################
+    # Docker installation
+    # ###########################################################
+    EnableOpsConfig                            = true
+    HostMountPoint                             = /mnt1
+    EnableDocker                               = true
+    TargetHardware                             = ec2
+    # TargetRegion = us-east-1
+    PlayerNumber                               = 1
+    LoggingTimezone                            = Asia/Kolkata
+    # ###########################################################
+    # Blip
+    # ###########################################################
+    BlipHost                                   = delta-del1.cpvdevdelta.amagi.tv
+    BlipToken                                  = FWLdFB3sTgnJRmeG_Sxa
+    BlipWebsocketAddress                       = 
+    PlayoutHeadendID                           = XX_prat1
+    # MonitoringServerHost = mon.amagi.cms.tv
+    BlipFeedResolution                         = 
+    BlipAccountName                            = 
+    # ###########################################################
+    # Output
+    # ###########################################################
+    OutputURLs                                 = udp://224.2.2.2:1471:lo
+    # ###########################################################
+    # Video output
+    # ###########################################################
+    OutputVideoMode                            = 1920x1080i59.94
+    # VideoPixelFormat = 4:2:0_8bit
+    VideoGOPSize                               = 
+    HDRMode                                    = 
+    HDRMaxCLL                                  = 
+    HDRMasteringDisplay                        = 
+    # ###########################################################
+    # TS output
+    # ###########################################################
+    TSOutVideoCodec                            = h264
+    TSOutH264EncQuality                        = 9
+    # TSOutMPEG2EncQuality = 16
+    # TSOutVideoBitrateMbps = 8
+    TSOutMuxBitrateMbps                        = 10
+    # TSOutVideoPID = 2064
+    TSOutVideoEncProfile                       = 
+    TSOutVideoEncLevel                         = 
+    TSOutVideoEncTier                          = 
+    TSOutAudioCodecs                           = mp2
+    # TSOutAudioPIDs = 2068,2069
+    # TSOutAudioLangs = eng,fre
+    TSOutAudioBitratesKbps                     = 192
+    # TSOutPMTPID = 129
+    # TSOutServiceName = Amagi
+    # TSOutServiceProvider = Amagi
+    # TSOutServiceID = 1
+    # TSOutTransportID = 0
+    # TSOutProfile = DVB
+    # EnableIATCorrection = false
+    # ###########################################################
+    # SDI output
+    # ###########################################################
+    # SDIOutAudioCodecs = pcm_2,pcm_2
+    # SDIOutAudioBitratesKbps = 192,192
+    # ###########################################################
+    # NDI output
+    # ###########################################################
+    NDIOutAudioCodecs                          = 
+    # ###########################################################
+    # Audio processing
+    # ###########################################################
+    # TargetLoudness = -24.0
+    # DolbyEncoderDialnorm = 24
+    # StereoDownmixMode = LoRo
+    # EnableAC3EncoderFollowInputMode = false
+    VoiceoverChannelMap                        = 
+    # ###########################################################
+    # File input
+    # ###########################################################
+    # TSFileInputVideoMap = 2064:h264
+    TSFileInputAudioMap                        = 2068:mp2
+    TSFileInputAudioMapP1                      = 64
+    # TSFileInputAudioMapP2 = 2072,2073
+    # MXFInputAudioMap<N>Ch
+    # MXFInputAudioMap2Ch = 1,2;2,2;1,2;2,2;1,2;2,2;1,2;2,2
+    # EnablePolicyBasedAudioShuffling = true
+    # EnableAudioBinding = true
+    EnableESFS                                 = 
+    # ###########################################################
+    # File download
+    # ###########################################################
+    EnableDeviceAgentS3Accelerate              = 
+    # ###########################################################
+    # Live input
+    # ###########################################################
+    # LiveInputURL = udp://127.0.0.1:6789:lo
+    # LiveInputDelayMS = 3000
+    # LiveInputVideoMode = 1920x1080i50
+    # TSLiveVideoMap = 2064:h264
+    # TSLiveAudioMap = 2068:aac;2069:mp2
+    # TSLivePCRPID = 2064
+    EnableTSLiveAudioMapping                   = 
+    # TSLiveAudioMapping<N>Ch
+    TSLiveAudioMapping2Ch                      = 
+    # GenLockVideoStandard = 480i60
+    # SDILiveAudioMap = 1,2:pcm;3,4:pcm
+    NDILiveAudioMap                            = 
+    EnableNDIDualConnection                    = 
+    # ###########################################################
+    # Aspect ratio
+    # ###########################################################
+    # InputAR = AFD
+    # OutputAR = 16:9
+    # ARCMode = bars
+    # EnableAFDPassthrough = true
+    # ###########################################################
+    # Graphics
+    # ###########################################################
+    # GraphicsFileMode = 1920x1080i50
+    # GraphicsFileAR = 16:9
+    # CEFMaxCPUCores = 2
+    # ###########################################################
+    # Subtitles
+    # ###########################################################
+    # OutputSubtitleModes = DVB,teletext_dvb
+    # LiveInputSubtitleModes = disable
+    # TSOutDVBSubPIDs = 200
+    # TSOutDVBSubBitrateKbps = 150
+    # FileInputDVBSubLangs = eng,fre
+    # TSOutDVBSubLangs = eng,fre
+    # TSInputDVBSubPIDs = 200,201
+    # DVBSubBurninPID = 200
+    # TSOutDVBSubSkipDDS = false
+    # TeletextOutPageIDs = 801
+    # TeletextInputPageIDs = 801,802
+    # TSOutTeletextPIDs = 300
+    # TeletextInputPIDs = 300
+    # FileInputTeletextLangs = eng,fre
+    # TeletextOutLangs = eng,fre
+    # TeletextBurninPageID = 801
+    # TeletextOutVBILineOffset = 22
+    # FileInputBurninSubtitleLang = eng
+    # BurninSubtitleRepositionYPos = 200
+    # EnableCCFromMediaFile = false
+    # FileInputCCSubtitleLangs = eng
+    CCEncoderMap                               = 
+    CCEncoderStyle                             = 
+    CCEncoderRow                               = 
+    LiveCaptioningProvider                     = 
+    LiveCaptioningAudioTrackIndex              = 
+    LiveCaptioningDelayMS                      = 
+    LiveCaptioningDelayOutputForCaptionsSync   = 
+    LiveCaptioningAmgLanguage                  = 
+    LiveCaptioningCapsequoAltaSyncAdjustmentMS = 
+    LiveCaptioningRowNumber                    = 
+    LiveCaptioningCapsequoProfile              = 
+    LiveCaptioningAlwaysOn                     = 
+    LiveCaptioningCapsequoEndPoint             = 
+    TSInputIMTPIDs                             = 
+    TSOutIMTPIDs                               = 
+    FileInputIMTLangs                          = 
+    TSOutIMTLangs                              = 
+    # ###########################################################
+    # Video processing
+    # ###########################################################
+    # WindowedVideoParams = 0,0,1720,980
+    # WindowedVideoSource = both
+    # ###########################################################
+    # SCTE
+    # ###########################################################
+    # TSSCTELivePIDs = 500,501
+    # SDISCTELiveDPIIndexes = 0,1
+    NDISCTELiveDPIIndexes                      = 
+    # SCTE35TSOutPIDs = 500,501
+    # SCTE104SDIOutPIDIndexes = 0,1
+    SCTE104NDIOutPIDIndexes                    = 
+    EnableInStreamAssetStatus                  = 
+    TSOutPacket31PID                           = 
+    TSOutPacket31Field                         = 
+    TSOutPacket31LineOffset                    = 
+    # ###########################################################
+    # Karma
+    # ###########################################################
+    # KarmaS3AccessKey =
+    # KarmaS3SecretKey =
+    # KarmaS3Bucket =
+    # KarmaS3UploadTime = 00:00:00
+    # KantarChannelName = amagcms
+    # ###########################################################
+    # CPLive
+    # ###########################################################
+    # EnableCPLive = false
+    # ElasticCacheBaseURL =
+    # ElasticCacheAPIKey =
+    # TardisGRPCEndPoints =
+    # CPLiveMaxLiveInputs = 1
+    CPLiveGRPCEndPoint                         = 
+    # ###########################################################
+    # PubNub
+    # ###########################################################
+    # PubNubPublishKey =
+    # PubNubSubscriberKey =
+    PubNubSecretKey                            = 
+    # ###########################################################
+    # PreHook
+    # ###########################################################
+    # PreHookMode = nop
+    # ###########################################################
+    # Nielsen
+    # ###########################################################
+    # NielsenSID = 9000
+    # NielsenCheckDigits = DK
+    # NielsenCSID = 0x51233
+    # NielsenCBETCheckDigits = GL
+    # NielsenActiveWatermarkProcess = 6
+    # NielsenDistributionType = 1
+    # NielsenInsertionMode = 1
+    # NielsenCBETStepAside = 0
+    # ##########################################################
+    # Logger
+    # ##########################################################
+    # CloudwatchAWSRegion = us-east-1
+    # CloudwatchAWSAccessKey =
+    # CloudwatchAWSSecretKey =
+    # CloudwatchAWSLogGroup = cloudport
+    # CloudwatchAWSLogStream = cms001
+    AWSS3LogsStoreRegion                       = 
+    AWSS3LogsStoreAccessKey                    = 
+    AWSS3LogsStoreSecretKey                    = 
+    AWSS3LogsStoreBucket                       = 
+    FluentdURL                                 = 
+    BlipName                                   = amagidev
+    # TSLiveTranscriptionAudioMap = 2068:mp2
+    # MXFInputAudioMap5Ch = 1,2;2,3;3,4;5,2;2,3;5,4;1,2;5,3
+    # MXFInputAudioMap7Ch = 1,1;2,2;2,3;4,4;1,4;2,2;5,3;6,4
+    # MXFInputAudioMap3Ch = 1,1;1,2;1,3;2,3;1,1;1,2;1,3;2,3
+    ; 1,1;1,1;1,1;1,1;1,1;1,1;1,1
+    MXFInputAudioMap1Ch                        = 1,1
+    # MXFInputAudioMap8Ch = 1,1;2,2;3,3;4,4;5,5;6,6;7,7;8,8
+    # MXFInputAudioMap4Ch = 3,1;1,2;3;4;2,3;3,1;1,2;3;4;2,3
+    BlipFeedID                                 = XX_011
+    
+    # MXFInputAudioMap6Ch = 1,1;2,2;3,6;1,2;2,6;3,4;1,2;2,6
+    # CPLiveSCTEPid = 7993
+    [CPPlayer]
+    # common_ts_params.null_kbps = 1000
+    # cloud_params.cloud_address = cip-svc-plr-tc-video-frc-009-thread-417:8081
+    # cloud_params.ssl_enabled = False
+    # dev_only.test_case_id = TestAutomation/TestRuns/16:03:2022_10:41:21-metric-92WF5,video,TC_video_frc_009
+    # scte_pvt_desc.enable_playout_status = 1
+    # default_rescue.rescue_file_pick_type = 0
+    # common_params.override_meta_audio_map = 1
+    # cloud_params.cloud_websocket_address = ws://cip-svc-plr-tc-video-frc-009-thread-417:8080
+    # scte_pvt_desc.enable_asset_info = 1
+    common_params.enable_ntp_sync_wait = 0
+---
+# Source: cp-playout/templates/metrics_forwarder_configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: player-elixir-001-player-scrape-cfg
+  namespace: delta-del1-playout
+  labels:    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"
+data:
+  scrape_cfg.yaml: |
+    endpoints:
+      - name: player
+        port: 37901
+      - name: sdc
+        port: 38901
+---
+# Source: cp-playout/templates/sdc_containers_config_map.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: elixir-001-player-sdc-containers-configmap
+  namespace: delta-del1-playout
+  labels:    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"
+data:
+  sdc_container_configs.yaml: |-
+    tarang:
+      env:
+        ENABLE_METRICS: "1"
+        ENABLE_STDOUT_LOGGING: "1"
+        JOB_FETCH_RETRY_COUNT: "120"
+        JOB_FETCH_RETRY_INTERVAL: "2"
+        JOB_JSON_PATH: /tmp/tarang/job.json
+        REMOTE_CONTEXT_PATH: ""
+      secretEnv:
+        AWS_ACCESS_KEY_ID: Tarang_AccessKey
+        AWS_SECRET_ACCESS_KEY: Tarang_AccessSecretKey
+        TARANG_BUCKET: Tarang_Bucket
+  tags.yaml: |-
+    cloud: null
+    k8s: null
+---
+# Source: cp-playout/templates/cluster_role.yaml
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: elixir-001-player-list-cluster-services-delta-del1-playout
+  labels:    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "services"
+  verbs:
+  - "list"
+  - "get"
+---
+# Source: cp-playout/templates/cluster_role.yaml
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: elixir-001-player-list-cluster-services-delta-del1-playout
+  labels:    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"
+subjects:
+ - kind: ServiceAccount
+   name: elixir-001-player-nlbget
+   namespace: delta-del1-playout
+roleRef:
+  kind: ClusterRole
+  name: elixir-001-player-list-cluster-services-delta-del1-playout
+  apiGroup: rbac.authorization.k8s.io
+---
+# Source: cp-playout/templates/role.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+ name: elixir-001-player-list-services
+ namespace: delta-del1-playout
+ labels:   
+   app.kubernetes.io/name: "playout"
+   guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+   manager: "elixir"
+   podType: "player"
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - "services"
+  verbs:
+  - "list"
+  - "get"
+---
+# Source: cp-playout/templates/rolebind.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+ name: elixir-001-player-list-services
+ namespace: delta-del1-playout
+ labels:   
+   app.kubernetes.io/name: "playout"
+   guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+   manager: "elixir"
+   podType: "player"
+roleRef:
+ kind: Role
+ name: elixir-001-player-list-services
+ apiGroup: rbac.authorization.k8s.io
+subjects:
+ - kind: ServiceAccount
+   name: elixir-001-player-nlbget
+   namespace: delta-del1-playout
+---
+# Source: cp-playout/templates/clusterip_service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: player1-elixir-001-player-cip
+  namespace: delta-del1-playout
+  labels:
+    app: player1-elixir-001-player-cip    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"
+spec:
+  type: ClusterIP
+  selector:
+    app: player-elixir-001-player
+  ports:
+  - name: player1-elixir-001-player-cip-port8300
+    port: 8300
+    targetPort: 8300
+    protocol: UDP
+    
+  - name: prom-port
+    port: 8600
+    targetPort: 8600
+    protocol: TCP
+  - name: "switcher-metrics"
+    port: 5001
+    targetPort: 5001
+    protocol: TCP
+  
+  - name: metrics-port1
+    port: 37902
+    targetPort: 37902
+    protocol: TCP
+  
+  - name: metrics-port2
+    port: 37903
+    targetPort: 37903
+    protocol: TCP
+  
+  - name: metrics-port3
+    port: 37904
+    targetPort: 37904
+    protocol: TCP
+  
+  - name: metrics-port4
+    port: 37905
+    targetPort: 37905
+    protocol: TCP
+  
+  - name: metrics-port5
+    port: 37906
+    targetPort: 37906
+    protocol: TCP
+  
+  - name: metrics-port6
+    port: 37907
+    targetPort: 37907
+    protocol: TCP
+  
+  - name: metrics-port7
+    port: 37908
+    targetPort: 37908
+    protocol: TCP
+  
+  - name: metrics-port8
+    port: 37909
+    targetPort: 37909
+    protocol: TCP
+  
+  - name: metrics-port9
+    port: 37910
+    targetPort: 37910
+    protocol: TCP
+  
+  - name: metrics-port10
+    port: 37911
+    targetPort: 37911
+    protocol: TCP
+  
+  - name: metrics-port11
+    port: 37912
+    targetPort: 37912
+    protocol: TCP
+  
+  - name: metrics-port12
+    port: 37913
+    targetPort: 37913
+    protocol: TCP
+  
+  - name: metrics-port13
+    port: 37914
+    targetPort: 37914
+    protocol: TCP
+  - name: player1-tardis1-peer-output
+    port: 61050
+    targetPort: 61050
+    protocol: TCP
+---
+# Source: cp-playout/templates/amagi_pod.yaml
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: player-elixir-001-player    
+    app.kubernetes.io/name: "playout"
+    guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+    manager: "elixir"
+    podType: "player"  
+  
+  name: player-elixir-001-player
+  namespace: delta-del1-playout
+spec:
+  replicas: 0
+  serviceName: player
+  selector:
+    matchLabels:
+      app: player-elixir-001-player
+  template:
+    metadata:
+      annotations:
+        checksum/config: adbc84deeafd5b7c2c86051155f72332df5fd1b5a40fe268a386efa30b99dbce
+        checksum/amg_capsequo: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/widget_layout: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/tarang_job: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/audio_shuffling_policies: e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+        checksum/sdc_container_configs: b18becc0217a3c37cd8c499de6c5c6e4f6e8c4957af92519b954ee0bc9073011
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
+      labels:
+        app: player-elixir-001-player
+                
+        app.kubernetes.io/name: "playout"
+        guid: "f428b6a7-dfb2-4d28-8bb8-6ac478d5b25b"
+        manager: "elixir"
+        podType: "player"
+      name: player
+    spec:
+      enableServiceLinks: False
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              # This key has been deprecated
+              - key: failure-domain.beta.kubernetes.io/zone
+                operator: In
+                values:
+                - "ap-south-1a"
+              - key: role
+                operator: In
+                values:
+                - "device-a"
+
+        
+
+      tolerations:
+      - key: "device-a"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+
+      serviceAccountName: elixir-001-player-nlbget
+
+      containers:
+      - name: sdc
+        image: "109667701036.dkr.ecr.us-east-1.amazonaws.com/cp/playout/orky:pr-2.7.11"
+
+        # This frees available port for capsequo if it is provided in atrributes.json
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/usr/bin/python3.7", "/home/amagi/workdir/serviceDiscovery/capsequoPreStopHandler.py"]
+
+        # This should be always set to false.
+        # If this is set to true, SDC cannot connect to the master
+        securityContext:
+          privileged: false
+
+        resources:
+          limits:
+            cpu: 100m
+            memory: 250M
+          requests:
+            cpu: 100m
+            memory: 250M
+
+        volumeMounts:
+          - mountPath: /mnt/configs/player
+            name: elixir-001-player-configmap
+            readOnly: true
+          - mountPath: /configMount/sdc
+            name: sdc-containers-configmap
+
+
+        env:
+        - name: POD_TYPE
+          value: player
+
+        - name: UUID
+          value: elixir-001-player
+
+        - name: APPSECRETS_ENABLED
+          value: "False"
+
+        - name: ENABLE_NATS
+          value: "true"
+        - name:  NATS_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: natsio-creds
+              key: endpoint
+              optional: true
+        - name:  NATS_UNAME
+          valueFrom:
+            secretKeyRef:
+              name: natsio-creds
+              key: user
+              optional: true
+        - name:  NATS_PASS
+          valueFrom:
+            secretKeyRef:
+              name: natsio-creds
+              key: password
+              optional: true
+
+        - name: PEER_INPUT_UUID        
+          value: ""
+        - name: PEER_OUTPUT_UUID        
+          value: ""
+        - name: VPCPEER_INPUT_UUID
+          value: 
+        - name: NAMESPACE
+          value: "delta-del1-playout"
+        - name: CLOUD_PROVIDER
+          value: aws
+        - name: AVAILABILITY_ZONE
+          value: "ap-south-1a"
+        - name: SDC_GRPC_SERVER_PORT
+          value: "8700"
+        - name: DELAY_SERVER_GRPC_PORT
+          value: "36000"
+        - name: DELAY_SECONDS
+          value: "300"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: SDC_METRICS_PORT
+          value: "38901"
+        - name: SERVICE_DISCOVERY_STORE_S3_BUCKET_NAME
+          value: "amagicloud-sdc-delta"
+        - name: PLAYER1_CONFIG_URL
+          value: "file:///mnt/configs/player/ops_config.ini"
+        - name: RAMFS_ENABLED
+          value: "false"
+        - name: PLSH_ENABLED
+          value: "false"
+
+        - name: PLAYER1_CONFIG_KEY
+          value: "PLAYER"
+
+        - name: PLAYER1_INPUT_TARDIS_CONFIG_KEYS        
+          value: ""
+        - name: PLAYER1_OUTPUT_TARDIS_CONFIG_KEYS        
+          value: "PLAYER1_TARDIS1_PEER_OUTPUT"
+
+        - name: PLAYER1_INPUT_STREAM_URL        
+          value: ""
+        - name: PLAYER1_OUTPUT_STREAM_URL        
+          value: "internal:srt://server:player1-elixir-001-player-cip.delta-del1-playout.svc.cluster.local:8300"
+
+        - name: ZIXI_FEEDER_LICENCE_KEY
+          value: 
+
+        - name: FLUENTD_ENDPOINT
+          value: 
+
+        envFrom:
+        - secretRef:
+            name: appsecret-crd
+            optional: true
+
+      - name: redis
+        image: "public.ecr.aws/amagi-public/cp/playout/redis:6.0.5-alpine"
+
+        securityContext:
+          privileged: true
+
+        resources:
+          limits:
+            cpu: 50m
+            memory: 250M
+          requests:
+            cpu: 50m
+            memory: 250M
+
+        ports:
+        - containerPort: 6379
+      - name: player1      
+        image: "109667701036.dkr.ecr.us-east-1.amazonaws.com/cp/playout/mimas:do_4.20.0.4"
+        command: ["/usr/sbin/init"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/bash", "-c", "/usr/local/amagi/scripts/karma_s3_upload/karma_log_upload_simple.sh"]
+
+        securityContext:
+          privileged: true
+
+        tty: true
+
+        resources:        
+          limits:
+            cpu: "8"
+            memory: "12Gi"
+          requests:
+            cpu: "8"
+            memory: "12Gi"  
+
+        volumeMounts:
+          - mountPath: /mnt/
+            name: player1-delta-del1-playout
+            subPath: player
+          - mountPath: /dev/shm
+            name: player-shm-area
+
+        env:
+        - name: CONFIG_KEY
+          value: "PLAYER"
+        - name: ORKY_MODE
+          value: K8S
+        - name: FILE_LOGGING
+          value: "NO"
+        - name: PROMETHEUS_METRICS_PORT
+          value: "37901"
+
+        - name: CFG_SERVER_PORT
+          value: "35000"
+      - name: player1-tardis1-peer-output
+        image: "109667701036.dkr.ecr.us-east-1.amazonaws.com/cp/playout/tardis:tar_0.20.9"
+        command: ["/lib/systemd/systemd"]
+
+        securityContext:
+          privileged: true
+
+        tty: true
+
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+        ports:
+          - containerPort:  8300
+            protocol: UDP
+        
+
+        env:
+        - name: CONFIG_KEY
+          value: "PLAYER1_TARDIS1_PEER_OUTPUT"
+        - name: ORKY_MODE
+          value: K8S
+        - name: FILE_LOGGING
+          value: "NO"
+
+      
+      - name: metrics-forwarder
+        image: "109667701036.dkr.ecr.us-east-1.amazonaws.com/cp/playout/metrics_forwarder:v1.0.9"
+        env:
+          - name: PROM_SCRAPE_LISTEN_PORT
+            value: "8600"
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "0.03125Gi"
+          requests:
+            cpu: "100m"
+            memory: "0.03125Gi"
+        command:
+          - /usr/local/bin/metrics_forwarder
+        volumeMounts:
+          - name: metrics-scrape-config
+            mountPath: /etc/metrics
+
+      volumes:
+        - name: player-shm-area
+          emptyDir:
+            medium: Memory        
+            sizeLimit: 2Gi
+        - name: metrics-scrape-config
+          configMap:
+            name: player-elixir-001-player-scrape-cfg
+            items:
+            - key: scrape_cfg.yaml
+              path: scrape_cfg.yaml
+        - name: cgroupmount
+          hostPath:
+            path: "/sys/fs/cgroup"
+        - name: elixir-001-player-configmap
+          configMap:
+            name: elixir-001-player-configmap
+            optional: true
+        - name: sdc-containers-configmap
+          configMap:
+            name: elixir-001-player-sdc-containers-configmap
+            optional: true
+
+      restartPolicy: Always
+
+  volumeClaimTemplates:
+  - metadata:
+      name: player1-delta-del1-playout
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "topology-aware-storage"
+      resources:
+        requests:        
+          storage: "200Gi"
