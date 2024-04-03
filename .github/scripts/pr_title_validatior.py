@@ -9,7 +9,6 @@ def validate_pr_body(body):
 def validate_pr_title(title):
     if PR_TITLE_PREFIX in title:
         print(f"Title has {PR_TITLE_PREFIX}")
-        exit(0)
     else:
         print(f"Title doesn't start with {PR_TITLE_PREFIX}")
         exit(1)
