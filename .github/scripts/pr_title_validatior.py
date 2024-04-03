@@ -3,6 +3,17 @@ import json
 
 PR_TITLE_PREFIX = "PR Merge"
 
+def validate_pr_body(body):
+    print(body)
+
+def validate_pr_title(title):
+    if PR_TITLE_PREFIX in title:
+        print(f"Title has {PR_TITLE_PREFIX}")
+        exit(0)
+    else:
+        print(f"Title doesn't start with {PR_TITLE_PREFIX}")
+        exit(1)
+
 def main():
     # Load pull request event payload
     event_path = os.getenv('GITHUB_EVENT_PATH')
@@ -18,14 +29,11 @@ def main():
         exit(1)
 
     title = event_payload['pull_request']['title']
+    validate_pr_title(title)
 
-    # Skip description check if title contains BUILD_TITLE_PATTERN
-    if PR_TITLE_PREFIX in title:
-        print(f"Title has {PR_TITLE_PREFIX}")
-        exit(0)
-    else:
-        print(f"Title doesn't start with {PR_TITLE_PREFIX}")
-        exit(1)
+    body = event_payload['pull_request']['body']
+    validate_pr_title(body)
+
 
 if __name__ == "__main__":
     main()
