@@ -1,6 +1,3 @@
----
-title: Creating a pull request template for your repository
----
 | Jira ID | |
 | :--- | :--- |
 | Changed Component Name, In case code change is needed | |
