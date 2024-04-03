@@ -1,0 +1,18 @@
+name: Validate PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  check_pr_description:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check PR Description
+        run: python .github/scripts/pr_description_validator.py
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
