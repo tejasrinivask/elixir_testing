@@ -16,6 +16,6 @@ jobs:
         run: pwd && ls -lah
 
       - name: Check PR Description
-        run: python .github/scripts/pr_description_validator.py
+        run: python .github/scripts/pr_title_validatior.py
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
