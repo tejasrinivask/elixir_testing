@@ -12,6 +12,9 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Check paths
+        run: pwd && ls -lah
+
       - name: Check PR Description
         run: python .github/scripts/pr_description_validator.py
         env:
