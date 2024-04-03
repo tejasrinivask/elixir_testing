@@ -1,7 +1,5 @@
 ---
-labels: bug
-assignees:
-  - tejasrinivask
+title: Creating a pull request template for your repository
 ---
 | L3 Analysis for QA | |
 | :--- | :--- |
