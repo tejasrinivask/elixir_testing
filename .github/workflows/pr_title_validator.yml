@@ -1,0 +1,21 @@
+name: Validate PR Title
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  fail-for-do-not-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Check paths
+        run: pwd && ls -lah
+
+      - name: Check PR Description
+        run: python .github/scripts/pr_title_validatior.py
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}

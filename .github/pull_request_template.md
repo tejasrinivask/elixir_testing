@@ -1,7 +1,4 @@
----
-title: Creating a pull request template for your repository
----
-| L3 Analysis for QA | |
+| Jira ID | |
 | :--- | :--- |
 | Changed Component Name, In case code change is needed | |
 | What are the steps to reproduce this issue? | |
