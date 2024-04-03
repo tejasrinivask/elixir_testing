@@ -5,7 +5,7 @@ on:
     types: [opened, edited, synchronize]
 
 jobs:
-  check_pr_description:
+  fail-for-do-not-merge:
     runs-on: ubuntu-latest
 
     steps:
