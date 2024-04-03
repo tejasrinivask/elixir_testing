@@ -1,5 +1,7 @@
 ---
-Test title
+labels: bug
+assignees:
+  - tejasrinivask
 ---
 | L3 Analysis for QA | |
 | :--- | :--- |
