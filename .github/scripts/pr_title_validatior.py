@@ -31,7 +31,7 @@ def main():
     validate_pr_title(title)
 
     body = event_payload['pull_request']['body']
-    validate_pr_title(body)
+    validate_pr_body(body)
 
 
 if __name__ == "__main__":
