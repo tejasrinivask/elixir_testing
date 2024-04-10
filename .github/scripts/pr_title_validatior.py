@@ -30,41 +30,22 @@ def validate_pr_title(title):
 
 def main():
     # Load pull request event payload
-    # event_path = os.getenv('GITHUB_EVENT_PATH')
-    # with open(event_path, 'r') as f:
-    #     try:
-    #         event_payload = json.load(f)
-    #     except Exception as e:
-    #         print("Error loading event payload, {e}")
-    #         exit(1)
+    event_path = os.getenv('GITHUB_EVENT_PATH')
+    with open(event_path, 'r') as f:
+        try:
+            event_payload = json.load(f)
+        except Exception as e:
+            print("Error loading event payload, {e}")
+            exit(1)
 
-    # if not event_payload or 'pull_request' not in event_payload or not event_payload['pull_request']:
-    #     print(f"Invalid event payload : {event_payload}")
-    #     exit(1)
+    if not event_payload or 'pull_request' not in event_payload or not event_payload['pull_request']:
+        print(f"Invalid event payload : {event_payload}")
+        exit(1)
 
-    # # title = event_payload['pull_request']['title']
-    # # validate_pr_title(title)
+    # title = event_payload['pull_request']['title']
+    # validate_pr_title(title)
 
-    # body = event_payload['pull_request']['body']
-    body = """
-| Jira ID | |
-| :--- | :--- |
-| Changed Component Name, In case code change is needed | |
-| What are the steps to reproduce this issue? | |
-| Are there any features likely to be impacted? If so, what are the features and what is impact? | |
-| How can this change be tested? Is there any additional tests to be done other than bug fix validation? | |
-| Should this fix be considered for LTS Release? | Yes / No |
-| Is the fix for this issue available in any of the latest CP releases? | |
-
-| Jira ID ||
-| :--- | :--- |
-| Changed Component Name, In case code change is needed | |
-| What are the steps to reproduce this issue? | |
-| Are there any features likely to be impacted? If so, what are the features and what is impact? | |
-| How can this change be tested? Is there any additional tests to be done other than bug fix validation? | |
-| Should this fix be considered for LTS Release? | Yes / No |
-| Is the fix for this issue available in any of the latest CP releases? | |
-    """
+    body = event_payload['pull_request']['body']
     validate_pr_body(body)
 
 
