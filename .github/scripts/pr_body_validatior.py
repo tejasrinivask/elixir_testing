@@ -24,10 +24,12 @@ def thread_execution_for_jira(username, password, domain, issue_list):
                 data = future.result()
             except Exception as err:
                 print(f"Failed getting data for {item} with error {err}")
-                return []
             else:
                 if data:
                     return_list.append(item)
+                else:
+                    print(f"No jira info for id {item}, exiting ...")
+                    exit(1)
     return return_list
 
 def validate_pr_body(body):
