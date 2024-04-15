@@ -1,8 +1,17 @@
+import concurrent.futures
 import json
 import os
 import re
+import requests
 
 PR_TITLE_PREFIX = "PR Merge"
+
+def check_if_jira_exists(username, password, domain, issue_id):
+    url = f"https://{domain}/rest/api/3/issue/{issue_id}"
+    response = requests.get(url, auth=(username, password))
+    if response.status_code == 404:
+        return False
+    return True
 
 def thread_execution_for_jira(username, password, domain, issue_list):
     return_list = []
