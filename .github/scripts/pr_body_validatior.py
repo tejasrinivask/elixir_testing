@@ -16,9 +16,9 @@ def validate_pr_body(body):
                 tmp_list = [x.strip() for x in data.split(",")]
                 jira_list.extend(tmp_list)
     if not jira_list:
-        print("exiting")
+        print("No Jira ID's, exiting ...")
         exit(1)
-    print(jira_list)
+    print(f"jira_list -> {jira_list}")
     return
 
 def validate_pr_title(title):
