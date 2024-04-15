@@ -4,6 +4,22 @@ import re
 
 PR_TITLE_PREFIX = "PR Merge"
 
+def thread_execution_for_jira(username, password, domain, issue_list):
+    return_list = []
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+        future_to_item = {executor.submit(check_if_jira_exists, username, password, domain, item): item for item in issue_list}
+        for future in concurrent.futures.as_completed(future_to_item):
+            item = future_to_item[future]
+            try:
+                data = future.result()
+            except Exception as err:
+                print(f"Failed getting data for {item} with error {err}")
+            else:
+                if data:
+                    return_list.append(item)
+    return return_list
+
 def validate_pr_body(body):
     jira_list = []
     p = re.compile(r"^\s*\|\s*Jira ID\s*\|\s*")
@@ -16,9 +32,20 @@ def validate_pr_body(body):
                 tmp_list = [x.strip() for x in data.split(",")]
                 jira_list.extend(tmp_list)
     if not jira_list:
-        print("exiting")
+        print("No Jira ID's, exiting ...")
         exit(1)
-    print(jira_list)
+    print(f"jira_list -> {jira_list}")
+    jira_uname = os.environ.get("JIRA_USERNAME", "")
+    jira_password = os.environ.get("JIRA_PASSWORD", "")
+    jira_domain = os.environ.get("JIRA_DOMAIN", "")
+    if not jira_uname or not jira_password or not jira_domain:
+        print("Skipping jira check as jira credentials are not")
+        return
+    final_list = thread_execution_for_jira(jira_uname, jira_password, jira_domain)
+    if not final_list:
+        print(f"No valid jira id's, exiting ...")
+        exit(1)
+    print(f"valid jira_list -> {final_list}")
     return
 
 def validate_pr_title(title):
