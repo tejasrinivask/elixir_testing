@@ -41,7 +41,7 @@ def validate_pr_body(body):
     if not jira_uname or not jira_password or not jira_domain:
         print("Skipping jira check as jira credentials are not")
         return
-    final_list = thread_execution_for_jira(jira_uname, jira_password, jira_domain)
+    final_list = thread_execution_for_jira(jira_uname, jira_password, jira_domain, jira_list)
     if not final_list:
         print(f"No valid jira id's, exiting ...")
         exit(1)
