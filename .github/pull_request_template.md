@@ -4,20 +4,20 @@
 
 ### Config Changes
 #### New Configs
-| file | keyPath | description | mandatory | type | allowed-value | default-value | sample-value |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| component | file | keyPath | description | mandatory | type | allowed-value | default-value | sample-value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 #### Changed Configs
-| file | keyPath | description | mandatory | type | allowed-value | default-value | sample-value |
-| --- | --- | --- | --- | --- | --- | --- | --- |
+| component | file | keyPath | description | mandatory | type | allowed-value | default-value | sample-value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
 
 #### Removed Configs
-| file | keyPath | description |
-| --- | --- | --- |
+| component | file | keyPath | description |
+| --- | --- | --- | --- |
 
 #### Deprecated Configs
-| file | keyPath | description |
-| --- | --- | --- |
+| component | file | keyPath | description |
+| --- | --- | --- | --- |
 
 ### Dependencies
 | Dependency |
