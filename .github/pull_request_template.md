@@ -30,3 +30,10 @@
 ### Deprecated Features
 | Deprecated Features |
 | --- |
+
+### PR changes
+| | |
+| --- | --- |
+| Component name and changes | |
+| Steps to reproduce the issue and how to validate the changes | |
+| Other components that will be impacted | |
