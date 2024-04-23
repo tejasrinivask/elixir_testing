@@ -16,6 +16,9 @@ jobs:
         run: pwd && ls -lah
 
       - name: Check PR Description
-        run: python .github/scripts/pr_title_validatior.py
+        run: python .github/scripts/pr_body_validatior.py
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
+          JIRA_DOMAIN: ${{ secrets.JIRA_DOMAIN }}
+          JIRA_USERNAME: ${{ secrets.JIRA_USERNAME }}
+          JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}
