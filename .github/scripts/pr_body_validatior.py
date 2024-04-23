@@ -39,7 +39,9 @@ def markdown_tables_to_dicts(markdown_text):
 
     skip_section = False
     for line in lines:
+        print(line)
         if re.match(r'^#+\s+\w+', line):  # Check for headings
+            print(f"heading -> {line}")
             current_table = None
             table_name = line.strip('#').strip()
             if table_name == "PR changes":
@@ -51,6 +53,7 @@ def markdown_tables_to_dicts(markdown_text):
                 tables[table_name] = {}
             current_table = tables[table_name]
         elif re.match(r'^\|.*\|$', line):  # Check for table rows
+            print(f"table row -> {line}")
             if not skip_section:
                 if current_table is not None:
                     if 'headers' not in current_table:
