@@ -32,40 +32,41 @@ def thread_execution_for_jira(username, password, domain, issue_list):
                     exit(1)
     return return_list
 
-def validate_pr_body(body):
-    jira_list = []
-    p = re.compile(r"^\s*\|\s*Jira ID\s*\|\s*")
-    for each_line in body.splitlines():
-        # print(each_line)
-        m = p.match(each_line)
-        if m:
-            data = each_line[m.end():].rstrip(" |")
-            if data:
-                tmp_list = [x.strip() for x in data.split(",")]
-                jira_list.extend(tmp_list)
-    if not jira_list:
-        print("No Jira ID's, exiting ...")
-        exit(1)
-    print(f"jira_list -> {jira_list}")
-    jira_uname = os.environ.get("JIRA_USERNAME", "")
-    jira_password = os.environ.get("JIRA_PASSWORD", "")
-    jira_domain = os.environ.get("JIRA_DOMAIN", "")
-    if not jira_uname or not jira_password or not jira_domain:
-        print("Skipping jira check as jira credentials are not")
-        return
-    final_list = thread_execution_for_jira(jira_uname, jira_password, jira_domain, jira_list)
-    if not final_list:
-        print(f"No valid jira id's, exiting ...")
-        exit(1)
-    print(f"valid jira_list -> {final_list}")
-    return
+def markdown_tables_to_dicts(markdown_text):
+    tables = {}
+    current_table = None
+    lines = markdown_text.strip().split('\n')
 
-def validate_pr_title(title):
-    if PR_TITLE_PREFIX in title:
-        print(f"Title has {PR_TITLE_PREFIX}")
-    else:
-        print(f"Title doesn't start with {PR_TITLE_PREFIX}")
-        exit(1)
+    skip_section = False
+    for line in lines:
+        if re.match(r'^#+\s+\w+', line):  # Check for headings
+            current_table = None
+            table_name = line.strip('#').strip()
+            if table_name == "PR changes":
+                skip_section = True
+                continue
+            else:
+                skip_section = False
+            if table_name not in tables:
+                tables[table_name] = {}
+            current_table = tables[table_name]
+        elif re.match(r'^\|.*\|$', line):  # Check for table rows
+            if not skip_section:
+                if current_table is not None:
+                    if 'headers' not in current_table:
+                        current_table['headers'] = [header.strip() for header in line.strip('|').split('|') if header.strip()]
+                        current_table['data'] = []
+                    else:
+                        row_data = [data.strip() for data in line.strip('|').split('|')]
+                        if current_table['data'] or any(cell.strip() for cell in row_data):
+                            current_table['data'].append(dict(zip(current_table['headers'], row_data)))
+
+    # Remove the first data entry (separator row) from each table
+    for table in tables.values():
+        if table.get('data'):
+            del table['data'][0]
+
+    return tables
 
 def main():
     # Load pull request event payload
@@ -81,12 +82,34 @@ def main():
         print(f"Invalid event payload : {event_payload}")
         exit(1)
 
-    # title = event_payload['pull_request']['title']
-    # validate_pr_title(title)
+    markdown_text = event_payload['pull_request']['body']
+    # Convert Markdown tables to dictionaries
+    result = markdown_tables_to_dicts(markdown_text)
+    # print(result)
+    jira_list = []
+    try:
+        for each_entry in result["Changes"]["data"]:
+            if each_entry["Jira ID"] != "":
+                jira_list.append(each_entry["Jira ID"])
+    except Exception as err:
+        print(f"Error while getting Jira ID's -> {err}")
+    print(", ".join(jira_list))
+    # Format the dictionaries into YAML
+    # yaml_output = yaml.dump(result, default_flow_style=False)
+    # print(yaml_output)
+    jira_uname = os.environ.get("JIRA_USERNAME", "")
+    jira_password = os.environ.get("JIRA_PASSWORD", "")
+    jira_domain = os.environ.get("JIRA_DOMAIN", "")
+    if not jira_uname or not jira_password or not jira_domain:
+        print("Skipping jira check as jira credentials are not")
+        return
+    final_list = thread_execution_for_jira(jira_uname, jira_password, jira_domain, jira_list)
+    if not final_list:
+        print(f"No valid jira id's, exiting ...")
+        exit(1)
+    print(f"valid jira_list -> {final_list}")
+    exit(1)
 
-    body = event_payload['pull_request']['body']
-    validate_pr_body(body)
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
