@@ -83,9 +83,10 @@ def main():
         exit(1)
 
     markdown_text = event_payload['pull_request']['body']
+    print(markdown_text)
     # Convert Markdown tables to dictionaries
     result = markdown_tables_to_dicts(markdown_text)
-    # print(result)
+    print(result)
     jira_list = []
     try:
         for each_entry in result["Changes"]["data"]:
