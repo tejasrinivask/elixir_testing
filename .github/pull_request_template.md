@@ -1,9 +1,39 @@
-| Jira ID | |
-| :--- | :--- |
-| Changed Component Name, In case code change is needed | |
-| What are the steps to reproduce this issue? | |
-| Are there any features likely to be impacted? If so, what are the features and what is impact? | |
-| How can this change be tested? Is there any additional tests to be done other than bug fix validation? | |
-| Should this fix be considered for LTS Release? | Yes / No |
-| Is the fix for this issue available in any of the latest CP releases? | |
+### Changes
+| Jira ID | Description |
+| --- | --- |
 
+### Config Changes
+#### New Configs
+| component | file | keyPath | description | mandatory | type | allowed-value | default-value | sample-value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+#### Changed Configs
+| component | file | keyPath | description | mandatory | type | allowed-value | default-value | sample-value |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+
+#### Removed Configs
+| component | file | keyPath | description |
+| --- | --- | --- | --- |
+
+#### Deprecated Configs
+| component | file | keyPath | description |
+| --- | --- | --- | --- |
+
+### Dependencies
+| Dependency |
+| --- |
+
+### Limitations
+| Limitations |
+| --- |
+
+### Deprecated Features
+| Deprecated Features |
+| --- |
+
+### PR changes
+| | |
+| --- | --- |
+| Component name and changes | |
+| Steps to reproduce the issue and how to validate the changes | |
+| Other components that will be impacted | |
