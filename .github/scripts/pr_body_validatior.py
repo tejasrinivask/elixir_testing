@@ -41,7 +41,7 @@ def markdown_tables_to_dicts(markdown_text):
     for line in lines:
         print(line)
         if re.match(r'^#+\s+\w+', line):  # Check for headings
-            print(f"heading -> {line}")
+            print(f"current heading -> {line}")
             current_table = None
             table_name = line.strip('#').strip()
             if table_name == "PR changes":
@@ -63,6 +63,8 @@ def markdown_tables_to_dicts(markdown_text):
                         row_data = [data.strip() for data in line.strip('|').split('|')]
                         if current_table['data'] or any(cell.strip() for cell in row_data):
                             current_table['data'].append(dict(zip(current_table['headers'], row_data)))
+        else:
+            print(f"Just a line -> {line}")
 
     # Remove the first data entry (separator row) from each table
     for table in tables.values():
@@ -86,10 +88,14 @@ def main():
         exit(1)
 
     markdown_text = event_payload['pull_request']['body']
+    print("Printing markdown text")
     print(markdown_text)
+    print("-----------end-----------")
     # Convert Markdown tables to dictionaries
     result = markdown_tables_to_dicts(markdown_text)
+    print("Printing markdown to dict output")
     print(result)
+    print("-----------end-----------")
     jira_list = []
     try:
         for each_entry in result["Changes"]["data"]:
