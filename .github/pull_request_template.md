@@ -34,6 +34,7 @@
 ### PR changes
 | | |
 | --- | --- |
-| Component name and changes | |
+| Component name | |
+| What is the change? | | 
 | Steps to reproduce the issue and how to validate the changes | |
-| Other components that will be impacted | |
+| List of other components/features that will be impacted by this change | |
