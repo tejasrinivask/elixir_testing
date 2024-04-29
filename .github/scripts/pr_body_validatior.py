@@ -52,7 +52,7 @@ def markdown_tables_to_dicts(markdown_text):
             if table_name not in tables:
                 tables[table_name] = {}
             current_table = tables[table_name]
-        elif re.match(r'^*\s\|.*\|*\s$', line):  # Check for table rows
+        elif re.match(r'^\s*\|.*\|\s*$', line):  # Check for table rows
             print(f"table row -> {line}")
             if not skip_section:
                 if current_table is not None:
