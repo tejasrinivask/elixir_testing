@@ -118,7 +118,7 @@ def main():
         print(f"No valid jira id's, exiting ...")
         exit(1)
     print(f"valid jira_list -> {final_list}")
-    exit(1)
+    exit(0)
 
 
 if __name__ == '__main__':
