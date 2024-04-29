@@ -52,7 +52,7 @@ def markdown_tables_to_dicts(markdown_text):
             if table_name not in tables:
                 tables[table_name] = {}
             current_table = tables[table_name]
-        elif re.match(r'^\|.*\|$', line):  # Check for table rows
+        elif re.match(r'^*\s\|.*\|*\s$', line):  # Check for table rows
             print(f"table row -> {line}")
             if not skip_section:
                 if current_table is not None:
@@ -63,8 +63,8 @@ def markdown_tables_to_dicts(markdown_text):
                         row_data = [data.strip() for data in line.strip('|').split('|')]
                         if current_table['data'] or any(cell.strip() for cell in row_data):
                             current_table['data'].append(dict(zip(current_table['headers'], row_data)))
-        else:
-            print(f"Just a line -> {line}")
+        # else:
+        #     print(f"Just a line -> {line}")
 
     # Remove the first data entry (separator row) from each table
     for table in tables.values():
