@@ -87,8 +87,8 @@ def main():
         print(f"Invalid event payload : {event_payload}")
         exit(1)
 
-    print(event_payload)
-    print(f"base branch -> {event_payload['pull_request']['base']['ref']}")
+    # print(f"base branch -> {event_payload['pull_request']['base']['ref']}")
+    base_branch = event_payload['pull_request']['base']['ref']
     markdown_text = event_payload['pull_request']['body']
     print("Printing markdown text")
     print(markdown_text)
