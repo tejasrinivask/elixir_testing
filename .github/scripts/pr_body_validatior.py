@@ -88,7 +88,7 @@ def main():
         exit(1)
 
     print(event_payload)
-    print(f"base branch -> {event_payload['pull_request']}")
+    print(f"base branch -> {event_payload['pull_request']['base']}")
     markdown_text = event_payload['pull_request']['body']
     print("Printing markdown text")
     print(markdown_text)
