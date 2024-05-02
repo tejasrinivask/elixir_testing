@@ -1,0 +1,33 @@
+name: Create Release Notes Pr
+
+on:
+  workflow_dispatch:
+    inputs:
+      last_tag:
+        description: 'Previous Tag'
+        required: true
+      current_tag:
+        description: 'Current Tag'
+        required: true
+
+jobs:
+  Test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Get details from workflow
+        run: |
+          BASE_BRANCH=${{ github.ref_name }}
+          LAST_TAG=${{ github.event.inputs.last_tag }}
+          GIT_REPO=${{ github.repository }}
+          CURRENT_TAG=${{ github.event.inputs.current_tag }}
+          RELEASE_NOTES_PR="rc-release_notes_$TARGET_MIMAS_TAG"
+          DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          echo $BASE_BRANCH
+          echo $LAST_TAG
+          echo $GIT_REPO
+          echo $CURRENT_TAG
