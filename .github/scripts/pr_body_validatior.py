@@ -82,6 +82,7 @@ def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_bra
     return False
 
 def main():
+    prefix_branches, suffix_branches, contain_branches = [], [], []
     branches = sys.argv[1:]
     if not branches:
         print("No branches provided, skipping checks...")
