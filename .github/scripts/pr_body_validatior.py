@@ -38,7 +38,6 @@ def markdown_tables_to_dicts(markdown_text):
     for line in lines:
         print(line)
         if re.match(r'^#+\s+\w+', line):  # Check for headings
-            print(f"current heading -> {line}")
             current_table = None
             table_name = line.strip('#').strip()
             if table_name == "PR changes":
@@ -48,22 +47,32 @@ def markdown_tables_to_dicts(markdown_text):
                 skip_section = False
             if table_name not in tables:
                 tables[table_name] = {}
+                # skip_rows_count variable shows the rows count that needs to be skipped.
+                # creating new table needs setting up header row, hence the row (separator row) after that will be skipped.
+                tables[table_name]['skip_rows_count'] = 1
+            else:
+                # if the table already exists, then header and separator rows needs to be skipped.
+                tables[table_name]['skip_rows_count'] = 2
             current_table = tables[table_name]
         elif re.match(r'^\s*\|.*\|\s*$', line):  # Check for table rows
-            print(f"table row -> {line}")
             if not skip_section:
                 if current_table is not None:
                     if 'headers' not in current_table:
                         current_table['headers'] = [header.strip() for header in line.strip('|').split('|') if header.strip()]
                         current_table['data'] = []
                     else:
-                        row_data = [data.strip() for data in line.strip('|').split('|')]
-                        if current_table['data'] or any(cell.strip() for cell in row_data):
-                            current_table['data'].append(dict(zip(current_table['headers'], row_data)))
+                        # skip_rows_count values as '0' indicates that the current row is data row
+                        if current_table['skip_rows_count'] == 0:
+                            row_data = [data.strip() for data in line.strip('|').split('|')]
+                            if current_table['data'] or any(cell.strip() for cell in row_data):
+                                current_table['data'].append(dict(zip(current_table['headers'], row_data)))
+                        else:
+                            current_table['skip_rows_count'] -= 1
+    # Not required, skip_rows_count will take care of removing separator row
     # Remove the first data entry (separator row) from each table
-    for table in tables.values():
-        if table.get('data'):
-            del table['data'][0]
+    # for table in tables.values():
+    #     if table.get('data'):
+    #         del table['data'][0]
     return tables
 
 def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch):
@@ -101,9 +110,6 @@ def main():
         else:
             print(f"Unknown branch format -> {branch}")
             exit(1)
-    # print(f"Preffix branches: {', '.join(prefix_branches)}")
-    # print(f"Suffix branches: {', '.join(suffix_branches)}")
-    # print(f"Contain branches: {', '.join(contain_branches)}")
     # Load pull request event payload
     event_path = os.getenv('GITHUB_EVENT_PATH')
     with open(event_path, 'r') as f:
@@ -115,7 +121,6 @@ def main():
     if not event_payload or 'pull_request' not in event_payload or not event_payload['pull_request']:
         print(f"Invalid event payload : {event_payload}")
         exit(1)
-    # print(f"base branch -> {event_payload['pull_request']['base']['ref']}")
     base_branch = event_payload['pull_request']['base']['ref']
     head_branch = event_payload['pull_request']['head']['ref']
     result = execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch)
@@ -133,9 +138,6 @@ def main():
     except Exception as err:
         print(f"Error while getting Jira ID's -> {err}")
     print(", ".join(jira_list))
-    # Format the dictionaries into YAML
-    # yaml_output = yaml.dump(result, default_flow_style=False)
-    # print(yaml_output)
     jira_uname = os.environ.get("JIRA_USERNAME", "")
     jira_password = os.environ.get("JIRA_PASSWORD", "")
     jira_domain = os.environ.get("JIRA_DOMAIN", "")
