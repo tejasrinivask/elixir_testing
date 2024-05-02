@@ -3,8 +3,7 @@ import json
 import os
 import re
 import requests
-
-PR_TITLE_PREFIX = "PR Merge"
+import sys
 
 def check_if_jira_exists(username, password, domain, issue_id):
     url = f"https://{domain}/rest/api/3/issue/{issue_id}"
@@ -15,7 +14,6 @@ def check_if_jira_exists(username, password, domain, issue_id):
 
 def thread_execution_for_jira(username, password, domain, issue_list):
     return_list = []
-
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
         future_to_item = {executor.submit(check_if_jira_exists, username, password, domain, item): item for item in issue_list}
         for future in concurrent.futures.as_completed(future_to_item):
@@ -36,7 +34,6 @@ def markdown_tables_to_dicts(markdown_text):
     tables = {}
     current_table = None
     lines = markdown_text.strip().split('\n')
-
     skip_section = False
     for line in lines:
         print(line)
@@ -63,17 +60,49 @@ def markdown_tables_to_dicts(markdown_text):
                         row_data = [data.strip() for data in line.strip('|').split('|')]
                         if current_table['data'] or any(cell.strip() for cell in row_data):
                             current_table['data'].append(dict(zip(current_table['headers'], row_data)))
-        # else:
-        #     print(f"Just a line -> {line}")
-
     # Remove the first data entry (separator row) from each table
     for table in tables.values():
         if table.get('data'):
             del table['data'][0]
-
     return tables
 
+def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch):
+    for pre in prefix_branches:
+        if base_branch.startswith(pre):
+            print(f"Matches with prefix -> {pre}")
+            return True
+    for suf in suffix_branches:
+        if base_branch.endswith(suf):
+            print(f"Matches with suffix -> {suf}")
+            return True
+    for pattern in contain_branches:
+        if base_branch.contains(pattern):
+            print(f"Matches with pattern -> {pattern}")
+            return True
+    return False
+
 def main():
+    branches = sys.argv[1:]
+    if not branches:
+        print("No branches provided, skipping checks...")
+        exit(0)
+    for branch in branches:
+        if not branch.startswith('+'):
+            print(f"Unknown branch format -> {branch}")
+            exit(1)
+        each_branch = branch[1:]    # ignore + in the beginning
+        if each_branch[0] == '*' and each_branch[-1] == '*':  # format -> +*(branch)*
+            contain_branches.append(each_branch[each_branch.find('(')+1:each_branch.find(')')])
+        elif each_branch[0] == '*':     # format -> +*(branch)
+            prefix_branches.append(each_branch[each_branch.find('(')+1:each_branch.find(')')])
+        elif each_branch[-1] == '*':    # format -> +(branch)*
+            suffix_branches.append(each_branch[each_branch.find('(')+1:each_branch.find(')')])
+        else:
+            print(f"Unknown branch format -> {branch}")
+            exit(1)
+    # print(f"Preffix branches: {', '.join(prefix_branches)}")
+    # print(f"Suffix branches: {', '.join(suffix_branches)}")
+    # print(f"Contain branches: {', '.join(contain_branches)}")
     # Load pull request event payload
     event_path = os.getenv('GITHUB_EVENT_PATH')
     with open(event_path, 'r') as f:
@@ -82,22 +111,19 @@ def main():
         except Exception as e:
             print("Error loading event payload, {e}")
             exit(1)
-
     if not event_payload or 'pull_request' not in event_payload or not event_payload['pull_request']:
         print(f"Invalid event payload : {event_payload}")
         exit(1)
-
     # print(f"base branch -> {event_payload['pull_request']['base']['ref']}")
     base_branch = event_payload['pull_request']['base']['ref']
+    head_branch = event_payload['pull_request']['head']['ref']
+    result = execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch)
+    if not result:
+        print(f"{base_branch} did not match with any patterns. Skipping gh action check...")
+        exit(0)
     markdown_text = event_payload['pull_request']['body']
-    print("Printing markdown text")
-    print(markdown_text)
-    print("-----------end-----------")
     # Convert Markdown tables to dictionaries
     result = markdown_tables_to_dicts(markdown_text)
-    print("Printing markdown to dict output")
-    print(result)
-    print("-----------end-----------")
     jira_list = []
     try:
         for each_entry in result["Changes"]["data"]:
@@ -119,7 +145,7 @@ def main():
     if not final_list:
         print(f"No valid jira id's, exiting ...")
         exit(1)
-    print(f"valid jira_list -> {final_list}")
+    print(f"Valid jira_list -> {final_list}")
     exit(0)
 
 
