@@ -12,11 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check paths
-        run: pwd && ls -lah
-
-      - name: Check PR Description
-        run: python .github/scripts/pr_body_validatior.py
+      - name: Validate PR
+        run: python .github/scripts/pr_body_validatior.py '+*(tj_)' '+*(main)'
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
           JIRA_DOMAIN: ${{ secrets.JIRA_DOMAIN }}
