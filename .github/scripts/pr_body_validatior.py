@@ -36,7 +36,6 @@ def markdown_tables_to_dicts(markdown_text):
     lines = markdown_text.strip().split('\n')
     skip_section = False
     for line in lines:
-        print(line)
         if re.match(r'^#+\s+\w+', line):  # Check for headings
             current_table = None
             table_name = line.strip('#').strip()
