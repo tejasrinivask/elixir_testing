@@ -238,7 +238,7 @@ def main():
     # print(yaml_data)
     yaml = YAML()
     with open('build_notes.yaml', 'w') as outfile:
-        yaml.dump(data, outfile)
+        yaml.dump(yaml_data, outfile)
 
 
 if __name__ == '__main__':
