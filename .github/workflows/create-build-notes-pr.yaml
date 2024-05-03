@@ -47,4 +47,4 @@ jobs:
           # create pr
           gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $CURRENT_TAG" --body "TARGET_TAG: $CURRENT_TAG"
         env:
-          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}

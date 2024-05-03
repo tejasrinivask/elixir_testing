@@ -199,16 +199,16 @@ def main():
     LAST_TAG = sys.argv[3]
     CURRENT_TAG = sys.argv[4]
     DATE = sys.argv[5]
-    GIT_TOKEN = os.environ.get('GIT_TOKEN', None)
-    if not GIT_TOKEN:
-        print("Not able to get GIT_TOKEN")
+    GH_TOKEN = os.environ.get('GH_TOKEN', None)
+    if not GH_TOKEN:
+        print("Not able to get GH_TOKEN")
         exit(1)
     # in body "target_commitish" is optional if the "tag_name" already exists
     # if "tag_name" doesn't exist then "target_commitish" is used
     pr_list_res = requests.post(
         f"https://api.github.com/repos/{GIT_REPO}/releases/generate-notes",
         headers={
-            "Authorization": f"Bearer {GIT_TOKEN}",
+            "Authorization": f"Bearer {GH_TOKEN}",
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         },
@@ -228,7 +228,7 @@ def main():
             pr_info = requests.get(
             f"https://api.github.com/repos/{GIT_REPO}/pulls/{res[1]}",
             headers={
-                "Authorization": f"Bearer {GIT_TOKEN}",
+                "Authorization": f"Bearer {GH_TOKEN}",
                 "Accept": "application/vnd.github.v3+json",
             },
             ).json()
