@@ -48,6 +48,7 @@ def main():
             },
             ).json()
             pr_info_list.append(pr_info)
+    get_pr_body(pr_info_list)
 
 
 if __name__ == '__main__':
