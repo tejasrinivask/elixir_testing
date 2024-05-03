@@ -11,7 +11,9 @@ on:
         required: true
 
 jobs:
-  Test:
+  build-note-generator:
+    premissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -44,6 +46,5 @@ jobs:
           git push --set-upstream origin $BUILD_NOTES_PR
           # create pr
           gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $CURRENT_TAG" --body "TARGET_TAG: $CURRENT_TAG"
-
         env:
           GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
