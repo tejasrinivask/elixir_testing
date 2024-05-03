@@ -21,10 +21,12 @@ DEPENDENCIES            = "Dependencies"
 COMPONENT_RELEASES      = "Component Releases"
 JIRA_CHANGES            = "Changes"
 
-def generate_build_notes(final_dict, date):
+def generate_build_notes(final_dict, date, tag, author):
     yaml_data = {
         BUILD_NOTES:{
             BUILD_DATE: date,
+            "Tag": tag,
+            "Author": author,
             JIRA_CHANGES: list(),
             CONFIG_CHANGES:{
                 CONFIG_CHANGES_NEW:list(),
@@ -234,7 +236,7 @@ def main():
             ).json()
             pr_info_list.append(pr_info)
     final_dict = get_pr_body(pr_info_list)
-    yaml_data = generate_build_notes(final_dict, DATE)
+    yaml_data = generate_build_notes(final_dict, DATE, CURRENT_TAG, GIT_REPO.split('/')[-1])
     # print(yaml_data)
     yaml = YAML()
     with open('build_notes.yaml', 'w') as outfile:
