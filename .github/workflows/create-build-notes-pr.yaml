@@ -27,7 +27,7 @@ jobs:
           CURRENT_TAG=${{ github.event.inputs.current_tag }}
           RELEASE_NOTES_PR="rc-release_notes_$TARGET_MIMAS_TAG"
           DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-          echo $BASE_BRANCH
-          echo $LAST_TAG
-          echo $GIT_REPO
-          echo $CURRENT_TAG
+          echo "starting at $DATE"
+          python ./.github/scripts/create_build_notes.py "$GIT_REPO" "$BASE_BRANCH" "$LAST_TAG" "$CURRENT_TAG"
+        env:
+          GIT_TOKEN = ${{ secrets.GIT_TOKEN }}
