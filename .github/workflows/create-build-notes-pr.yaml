@@ -30,4 +30,4 @@ jobs:
           echo "starting at $DATE"
           python ./.github/scripts/create_build_notes.py "$GIT_REPO" "$BASE_BRANCH" "$LAST_TAG" "$CURRENT_TAG"
         env:
-          GIT_TOKEN = ${{ secrets.GIT_TOKEN }}
+          GIT_TOKEN: ${{ secrets.GIT_TOKEN }}
