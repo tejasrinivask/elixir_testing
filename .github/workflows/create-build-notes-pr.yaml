@@ -32,8 +32,8 @@ jobs:
           BUILD_NOTES_PR="rc-build-notes-$CURRENT_TAG"
           DATE=$(date -u +"%d-%m-%Y")
           # configure git
-          git config --local user.email "actions@github.com"
-          git config --local user.name "Github Actions"
+          git config --local user.email "tejasrinivas@amagi.com"
+          git config --local user.name "tejasrinivask"
           git switch $BASE_BRANCH
           git switch -c $BUILD_NOTES_PR
           # call script for build notes generation
