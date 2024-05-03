@@ -5,6 +5,8 @@ import os
 import re
 import requests
 import sys
+from ruamel.yaml import YAML
+
 
 BUILD_NOTES             = "BuildNotes"
 BUILD_DATE              = "Date"
@@ -233,7 +235,10 @@ def main():
             pr_info_list.append(pr_info)
     final_dict = get_pr_body(pr_info_list)
     yaml_data = generate_build_notes(final_dict, DATE)
-    print(yaml_data)
+    # print(yaml_data)
+    yaml = YAML()
+    with open('build_notes.yaml', 'w') as outfile:
+        yaml.dump(data, outfile)
 
 
 if __name__ == '__main__':
