@@ -6,8 +6,57 @@ import requests
 import sys
 
 def get_pr_body(pr_info_list):
+    final_dict = {}
     for item in pr_info_list:
-        print(item)
+        number = item['number']
+        body = item['body']
+        data = markdown_tables_to_dicts(body)
+        final_dict[number] = body
+    return final_dict
+
+def markdown_tables_to_dicts(markdown_text):
+    tables = {}
+    current_table = None
+    lines = markdown_text.strip().split('\n')
+    skip_section = False
+    for line in lines:
+        if re.match(r'^#+\s+\w+', line):  # Check for headings
+            current_table = None
+            table_name = line.strip('#').strip()
+            if table_name == "PR changes":
+                skip_section = True
+                continue
+            else:
+                skip_section = False
+            if table_name not in tables:
+                tables[table_name] = {}
+                # skip_rows_count variable shows the rows count that needs to be skipped.
+                # creating new table needs setting up header row, hence the row (separator row) after that will be skipped.
+                tables[table_name]['skip_rows_count'] = 1
+            else:
+                # if the table already exists, then header and separator rows needs to be skipped.
+                tables[table_name]['skip_rows_count'] = 2
+            current_table = tables[table_name]
+        elif re.match(r'^\s*\|.*\|\s*$', line):  # Check for table rows
+            if not skip_section:
+                if current_table is not None:
+                    if 'headers' not in current_table:
+                        current_table['headers'] = [header.strip() for header in line.strip('|').split('|') if header.strip()]
+                        current_table['data'] = []
+                    else:
+                        # skip_rows_count values as '0' indicates that the current row is data row
+                        if current_table['skip_rows_count'] == 0:
+                            row_data = [data.strip() for data in line.strip('|').split('|')]
+                            if current_table['data'] or any(cell.strip() for cell in row_data):
+                                current_table['data'].append(dict(zip(current_table['headers'], row_data)))
+                        else:
+                            current_table['skip_rows_count'] -= 1
+    # Not required, skip_rows_count will take care of removing separator row
+    # Remove the first data entry (separator row) from each table
+    # for table in tables.values():
+    #     if table.get('data'):
+    #         del table['data'][0]
+    return tables
 
 def main():
     GIT_REPO = sys.argv[1]
@@ -48,7 +97,8 @@ def main():
             },
             ).json()
             pr_info_list.append(pr_info)
-    get_pr_body(pr_info_list)
+    final_dict = get_pr_body(pr_info_list)
+    print(final_dict)
 
 
 if __name__ == '__main__':
