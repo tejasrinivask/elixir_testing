@@ -6,6 +6,144 @@ import re
 import requests
 import sys
 
+BUILD_NOTES             = "BuildNotes"
+BUILD_DATE              = "Date"
+CONFIG_CHANGES          = "Config Changes"
+CONFIG_CHANGES_NEW      = "New"
+CONFIG_CHANGES_MOD      = "Changed"
+CONFIG_CHANGES_DEPR     = "Deprecated"
+CONFIG_CHANGES_REM      = "Removed"
+DEPRECATED_FEATURES     = "Deprecated Features"
+LIMITATIONS             = "Limitations"
+DEPENDENCIES            = "Dependencies"
+COMPONENT_RELEASES      = "Component Releases"
+JIRA_CHANGES            = "Changes"
+
+def generate_build_notes(final_dict, date):
+    yaml_data = {
+        BUILD_NOTES:{
+            BUILD_DATE: date,
+            JIRA_CHANGES: list(),
+            CONFIG_CHANGES:{
+                CONFIG_CHANGES_NEW:list(),
+                CONFIG_CHANGES_MOD:list(),
+                CONFIG_CHANGES_DEPR:list(),
+                CONFIG_CHANGES_REM:list()
+            },
+            DEPRECATED_FEATURES:list(),
+            LIMITATIONS:list(),
+            DEPENDENCIES:list()
+        }
+    }
+    for pr_number, pr_data in final_dict.items():
+        if JIRA_CHANGES in pr_data:
+            for entry in pr_data[JIRA_CHANGES]["data"]:
+                yaml_data[BUILD_NOTES][JIRA_CHANGES].append(entry)
+        if "New Configs" in pr_data and pr_data["New Configs"]["data"]:
+            component = pr_data["New Configs"]["data"][0]["component"]
+            files = []
+            for entry in pr_data["New Configs"]["data"]:
+                files.append(
+                    {
+                        "file": entry["file"],
+                        "changes": [
+                            {
+                                "keyPath": entry["keyPath"],
+                                "description": entry["description"],
+                                "mandatory": entry["mandatory"],
+                                "type": entry["type"],
+                                "allowed-value": entry["allowed-value"],
+                                "default-value": entry["default-value"],
+                                "sample-value": entry["sample-value"],
+                            }
+                        ]
+                    }
+                )
+            yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_NEW].append(
+                {
+                    "component": component,
+                    "files": files,
+                }
+            )
+        if "Changed Configs" in pr_data and pr_data["Changed Configs"]["data"]:
+            component = pr_data["Changed Configs"]["data"][0]["component"]
+            files = []
+            for entry in pr_data["Changed Configs"]["data"]:
+                files.append(
+                    {
+                        "file": entry["file"],
+                        "changes": [
+                            {
+                                "keyPath": entry["keyPath"],
+                                "description": entry["description"],
+                                "mandatory": entry["mandatory"],
+                                "type": entry["type"],
+                                "allowed-value": entry["allowed-value"],
+                                "default-value": entry["default-value"],
+                                "sample-value": entry["sample-value"],
+                            }
+                        ]
+                    }
+                )
+            yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_MOD].append(
+                {
+                    "component": component,
+                    "files": files,
+                }
+            )
+        if "Removed Configs" in pr_data and pr_data["Removed Configs"]["data"]:
+            component = pr_data["Removed Configs"]["data"][0]["component"]
+            files = []
+            for entry in pr_data["Removed Configs"]["data"]:
+                files.append(
+                    {
+                        "file": entry["file"],
+                        "changes": [
+                            {
+                                "keyPath": entry["keyPath"],
+                                "description": entry["description"],
+                            }
+                        ]
+                    }
+                )
+            yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_REM].append(
+                {
+                    "component": component,
+                    "files": files,
+                }
+            )
+        if "Deprecated Configs" in pr_data and pr_data["Deprecated Configs"]["data"]:
+            component = pr_data["Deprecated Configs"]["data"][0]["component"]
+            files = []
+            for entry in pr_data["Deprecated Configs"]["data"]:
+                files.append(
+                    {
+                        "file": entry["file"],
+                        "changes": [
+                            {
+                                "keyPath": entry["keyPath"],
+                                "description": entry["description"],
+                            }
+                        ]
+                    }
+                )
+            yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_REM].append(
+                {
+                    "component": component,
+                    "files": files,
+                }
+            )
+        if LIMITATIONS in pr_data:
+            for entry in pr_data[LIMITATIONS]["data"]:
+                yaml_data[BUILD_NOTES][LIMITATIONS].append(entry)
+        if DEPENDENCIES in pr_data:
+            for entry in pr_data[DEPENDENCIES]["data"]:
+                yaml_data[BUILD_NOTES][DEPENDENCIES].append(entry)
+        if DEPRECATED_FEATURES in pr_data:
+            for entry in pr_data[DEPRECATED_FEATURES]["data"]:
+                yaml_data[BUILD_NOTES][DEPRECATED_FEATURES].append(entry)
+    return yaml_data
+
 def get_pr_body(pr_info_list):
     final_dict = {}
     for item in pr_info_list:
@@ -58,6 +196,7 @@ def main():
     BASE_BRANCH = sys.argv[2]
     LAST_TAG = sys.argv[3]
     CURRENT_TAG = sys.argv[4]
+    DATE = sys.argv[5]
     GIT_TOKEN = os.environ.get('GIT_TOKEN', None)
     if not GIT_TOKEN:
         print("Not able to get GIT_TOKEN")
@@ -93,7 +232,8 @@ def main():
             ).json()
             pr_info_list.append(pr_info)
     final_dict = get_pr_body(pr_info_list)
-    print(final_dict)
+    yaml_data = generate_build_notes(final_dict, DATE)
+    print(yaml_data)
 
 
 if __name__ == '__main__':
