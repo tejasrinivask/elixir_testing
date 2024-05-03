@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 import requests
 import sys
 
@@ -51,11 +52,6 @@ def markdown_tables_to_dicts(markdown_text):
                                 current_table['data'].append(dict(zip(current_table['headers'], row_data)))
                         else:
                             current_table['skip_rows_count'] -= 1
-    # Not required, skip_rows_count will take care of removing separator row
-    # Remove the first data entry (separator row) from each table
-    # for table in tables.values():
-    #     if table.get('data'):
-    #         del table['data'][0]
     return tables
 
 def main():
