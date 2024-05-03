@@ -5,6 +5,10 @@ import os
 import requests
 import sys
 
+def get_pr_body(pr_info_list):
+    for item in pr_info_list:
+        print(item)
+
 def main():
     GIT_REPO = sys.argv[1]
     BASE_BRANCH = sys.argv[2]
@@ -44,7 +48,6 @@ def main():
             },
             ).json()
             pr_info_list.append(pr_info)
-    print("\n".join(pr_list))
 
 
 if __name__ == '__main__':
