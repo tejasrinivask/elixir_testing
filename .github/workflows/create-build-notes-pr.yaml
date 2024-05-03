@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-note-generator:
-    premissions:
+    permissions:
       contents: write
     runs-on: ubuntu-latest
     steps:
