@@ -10,9 +10,8 @@ def get_pr_body(pr_info_list):
     final_dict = {}
     for item in pr_info_list:
         number = item['number']
-        body = item['body']
-        data = markdown_tables_to_dicts(body)
-        final_dict[number] = body
+        data = markdown_tables_to_dicts(item['body'])
+        final_dict[number] = data
     return final_dict
 
 def markdown_tables_to_dicts(markdown_text):
