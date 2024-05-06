@@ -79,7 +79,7 @@ def markdown_tables_to_dicts(markdown_text):
 def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch):
     """
     Skips the github action in the following scenarios:
-    - if the head_branch is of the build_notes branch format
+    - if the head_branch is not of the build_notes branch format
     - if the base branch is of type provided in any of the lists
 
     Params:
@@ -92,8 +92,8 @@ def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_bra
     Returns:
     True if it should skip, else False
     """
-    if head_branch.startswith(BUILD_NOTES_PR_BRANCH_FORMAT):
-        return True
+    if head_branch.startswith(BUILD_NOTES_PR_BRANCH_FORMAT):    # skip check for build notes pr
+        return False
     for pre in prefix_branches:
         if base_branch.startswith(pre):
             print(f"Matches with prefix -> {pre}")
