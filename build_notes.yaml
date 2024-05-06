@@ -1,28 +1,16 @@
 BuildNotes:
   Date: 06-05-2024
-  Tag: v0.0.3
+  Tag: v0.0.4
   Author: elixir_testing
   Changes:
-  - Jira ID: DLP-485
-    Description: Changes for simulcast templates.
-  - Jira ID: CRP-1299
-    Description: Changes to support srt1.5 in helm and sdc.
+  - Jira ID: DLP-41
+    Description: Some critical bug
   Config Changes:
     New: []
-    Changed:
-    - component: comp1
-      files:
-      - file: somefile1.txt
-        changes:
-        - keyPath: keypath10
-          description: changes for keypath1
-          mandatory: no
-          type: int
-          allowed-value: 0-1
-          default-value: '0'
-          sample-value: '0'
+    Changed: []
     Deprecated: []
     Removed: []
   Deprecated Features: []
   Limitations: []
-  Dependencies: []
+  Dependencies:
+  - Dependency: Depends on this platform release
