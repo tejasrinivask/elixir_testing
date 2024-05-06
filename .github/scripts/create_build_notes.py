@@ -131,7 +131,7 @@ def generate_build_notes(final_dict, date, tag, author):
                         ]
                     }
                 )
-            yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_REM].append(
+            yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_DEPR].append(
                 {
                     "component": component,
                     "files": files,
