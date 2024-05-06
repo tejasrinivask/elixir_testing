@@ -1,0 +1,42 @@
+name: Tag release from PR
+
+on:
+  pull_request:
+    types:
+      - closed
+
+
+jobs:
+  Tag-rls-from-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install Dependencies
+        run: pip install PyGithub
+
+      - name: Create tag from Pr
+        if: github.event.pull_request.merged == true
+        run: |
+          BASE_BRANCH=${{ github.base_ref }}
+          PR_BODY=$(echo -n "${{ github.event.pull_request.body }}" | tr -d '\r')
+          GIT_REPO=${{ github.repository }}
+          LATEST_COMMIT=${{ github.event.pull_request.head.sha }}
+          TARGET_TAG=$(echo "$PR_BODY" | grep -iE 'TARGET_TAG: ?"?([^"]*)"?$' |  sed -nE 's/TARGET_TAG: ?"?([^"]*)"?$/\1/pI')
+          TARGET_TAG="${TARGET_TAG#"${TARGET_TAG%%[![:space:]]*}"}" #Removing Leading and Trailing spaces
+          TARGET_TAG="${TARGET_TAG%"${TARGET_TAG##*[![:space:]]}"}"
+          echo "TARGET_TAG is $TARGET_TAG"
+          BUILD_NOTES_PR="rc-build-notes-$CURRENT_TAG"
+          SOURCE_BRANCH=${{ github.head_ref }}
+          if [[ $SOURCE_BRANCH == $BUILD_NOTES_PR ]]
+          then
+              python ./.github/scripts/create_tag_from_pr.py $TARGET_TAG $BASE_BRANCH $GIT_REPO $LATEST_COMMIT
+          else
+              echo "source branch is not build notes pr"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}

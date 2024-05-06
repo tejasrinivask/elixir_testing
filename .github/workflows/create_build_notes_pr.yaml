@@ -22,8 +22,7 @@ jobs:
           ref: ${{ github.ref_name }}
 
       - name: Install dependencies
-        run: |
-          pip install ruamel.yaml
+        run: pip install ruamel.yaml
 
       - name: Get details from workflow
         run: |

@@ -5,6 +5,8 @@ import re
 import requests
 import sys
 
+BUILD_NOTES_PR_BRANCH_FORMAT = "rc-build-notes-"
+
 def check_if_jira_exists(username, password, domain, issue_id):
     url = f"https://{domain}/rest/api/3/issue/{issue_id}"
     response = requests.get(url, auth=(username, password))
@@ -74,7 +76,22 @@ def markdown_tables_to_dicts(markdown_text):
     #         del table['data'][0]
     return tables
 
-def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch):
+def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch):
+    """
+    Skips the github action in the following scenarios:
+    - if the base branch is of type provided in any of the lists
+    - if the head_branch is of the build_notes branch format
+
+    Params:
+    prefix_branches: list
+    suffix_branches: list
+    contain_branches: list
+    base_branch: str
+    head_branch: str
+
+    Returns:
+    True if it should skip, else False
+    """
     for pre in prefix_branches:
         if base_branch.startswith(pre):
             print(f"Matches with prefix -> {pre}")
@@ -87,9 +104,28 @@ def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_bra
         if base_branch.contains(pattern):
             print(f"Matches with pattern -> {pattern}")
             return True
+    if head_branch.startswith(BUILD_NOTES_PR_BRANCH_FORMAT):
+        return True
     return False
 
-def main():
+def validate_branches():
+    """
+    Parse branches provided in the arguments and returns 3 lists of branches
+    prefix_branches -> format +*(branch_prefix)
+    suffix_branches -> format +(branch_suffix)*
+    contain_branches -> format +*(branch_contains_string)*
+
+    Exits if branch format doesn't start with "+" or unknown format.
+
+    Params:
+    None
+
+    Returns:
+    3 lists of branches with the provided arguments, namely:
+    prefix_branches -> list
+    suffix_branches -> list
+    contain_branches -> list
+    """
     prefix_branches, suffix_branches, contain_branches = [], [], []
     branches = sys.argv[1:]
     if not branches:
@@ -109,7 +145,12 @@ def main():
         else:
             print(f"Unknown branch format -> {branch}")
             exit(1)
-    # Load pull request event payload
+    return prefix_branches, suffix_branches, contain_branches
+
+def main():
+    # get the branches lists for validation
+    prefix_branches, suffix_branches, contain_branches = validate_branches()
+    # load pull request event payload
     event_path = os.getenv('GITHUB_EVENT_PATH')
     with open(event_path, 'r') as f:
         try:
