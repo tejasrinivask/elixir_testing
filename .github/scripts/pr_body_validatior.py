@@ -92,25 +92,27 @@ def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_bra
     head_branch: str
 
     Returns:
-    True if it should skip, else False
+    bool, bool
+    first return type gives the result if the action should be skipped or not if the prefix is '+'. If the prefix is '-' caller should reverse it and use
+    second return param indicates if the skip is because of head ref. It will be true only if the pr is revert pr or build notes gen pr
     """
     if head_branch.startswith(REVERT_PR_BRANCH_FORMAT):    # skip check for build notes pr
-        return False
+        return False, True
     if head_branch.startswith(BUILD_NOTES_PR_BRANCH_FORMAT):    # skip check for build notes pr
-        return False
+        return False, True
     for pre in prefix_branches:
         if base_branch.startswith(pre):
             print(f"Matches with prefix -> {pre}")
-            return True
+            return True, False
     for suf in suffix_branches:
         if base_branch.endswith(suf):
             print(f"Matches with suffix -> {suf}")
-            return True
+            return True, False
     for pattern in contain_branches:
         if base_branch.contains(pattern):
             print(f"Matches with pattern -> {pattern}")
-            return True
-    return False
+            return True, False
+    return False, False
 
 def validate_branches():
     """
@@ -129,15 +131,27 @@ def validate_branches():
     prefix_branches -> list
     suffix_branches -> list
     contain_branches -> list
+    is_it_plus -> bool, will be True if the prefix '+', else False for '-'
     """
     prefix_branches, suffix_branches, contain_branches = [], [], []
     branches = sys.argv[1:]
     if not branches:
         print("No branches provided, skipping checks...")
         exit(0)
+    is_it_plus = False
+    symbol = ''
+    if branches[0].startswith("+"):
+        symbol = '+'
+        is_it_plus = True
+    elif branches[0].startswith("-"):
+        symbol = '-'
+        is_it_plus = False
+    else:
+        print(f"Unknown branch format -> {branches[0]}")
+        sys.exit(1)
     for branch in branches:
-        if not branch.startswith('+'):
-            print(f"Unknown branch format -> {branch}")
+        if not branch.startswith(symbol):
+            print(f"All the branches should be starting with the same prefix: {symbol}, error -> {branch}")
             exit(1)
         each_branch = branch[1:]    # ignore + in the beginning
         if each_branch[0] == '*' and each_branch[-1] == '*':  # format -> +*(branch)*
@@ -149,11 +163,11 @@ def validate_branches():
         else:
             print(f"Unknown branch format -> {branch}")
             exit(1)
-    return prefix_branches, suffix_branches, contain_branches
+    return prefix_branches, suffix_branches, contain_branches, is_it_plus
 
 def main():
     # get the branches lists for validation
-    prefix_branches, suffix_branches, contain_branches = validate_branches()
+    prefix_branches, suffix_branches, contain_branches, is_it_plus = validate_branches()
     # load pull request event payload
     event_path = os.getenv('GITHUB_EVENT_PATH')
     with open(event_path, 'r') as f:
@@ -167,9 +181,16 @@ def main():
         exit(1)
     base_branch = event_payload['pull_request']['base']['ref']
     head_branch = event_payload['pull_request']['head']['ref']
-    result = execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch)
+    result, is_it_because_of_head_ref = execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch)
     if not result:
-        print(f"{base_branch} did not match with any patterns. Skipping gh action check...")
+        if is_it_because_of_head_ref:
+            print("Skipping check as it is either build notes pr or revert pr")
+            exit(0)
+        if is_it_plus:
+            print(f"{base_branch} did not match with any patterns and the prefix is '+'. Skipping check...")
+            exit(0)
+    if result and not is_it_plus:
+        print(f"{base_branch} matches with a pattern and the prefix is '-'. Skipping check...")
         exit(0)
     markdown_text = event_payload['pull_request']['body']
     # Convert Markdown tables to dictionaries
