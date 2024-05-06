@@ -163,7 +163,7 @@ def main():
         exit(1)
     base_branch = event_payload['pull_request']['base']['ref']
     head_branch = event_payload['pull_request']['head']['ref']
-    result = execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch)
+    result = execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch)
     if not result:
         print(f"{base_branch} did not match with any patterns. Skipping gh action check...")
         exit(0)
