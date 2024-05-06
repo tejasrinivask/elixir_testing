@@ -36,7 +36,7 @@ jobs:
           echo "source branch -> $SOURCE_BRANCH"
           if [[ $SOURCE_BRANCH == $BUILD_NOTES_PR ]]
           then
-              python ./.github/scripts/create_tag_from_pr.py $TARGET_TAG $BASE_BRANCH $GIT_REPO $LATEST_COMMIT
+              python ./.github/scripts/tag_pr.py $TARGET_TAG $BASE_BRANCH $GIT_REPO $LATEST_COMMIT
           else
               echo "source branch is not build notes pr"
           fi
