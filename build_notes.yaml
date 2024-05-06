@@ -1,27 +1,15 @@
 BuildNotes:
   Date: 06-05-2024
-  Tag: v0.0.2
+  Tag: v0.0.3
   Author: elixir_testing
   Changes:
-  - Jira ID: CRP-1034
-    Description: Mount point for S3 playout
   - Jira ID: DLP-485
     Description: Changes for simulcast templates.
   - Jira ID: CRP-1299
     Description: Changes to support srt1.5 in helm and sdc.
   Config Changes:
-    New:
-    - component: comp1
-      files:
-      - file: somefile2.txt
-        changes:
-        - keyPath: keypath20
-          description: changes for keypath2
-          mandatory: yes
-          type: int
-          allowed-value: 0-10
-          default-value: '5'
-          sample-value: '7'
+    New: []
+    Changed:
     - component: comp1
       files:
       - file: somefile1.txt
@@ -33,7 +21,6 @@ BuildNotes:
           allowed-value: 0-1
           default-value: '0'
           sample-value: '0'
-    Changed: []
     Deprecated: []
     Removed: []
   Deprecated Features: []
