@@ -6,6 +6,7 @@ import requests
 import sys
 
 BUILD_NOTES_PR_BRANCH_FORMAT = "rc-build-notes-"
+REVERT_PR_BRANCH_FORMAT = "revert-"
 
 def check_if_jira_exists(username, password, domain, issue_id):
     url = f"https://{domain}/rest/api/3/issue/{issue_id}"
@@ -79,6 +80,7 @@ def markdown_tables_to_dicts(markdown_text):
 def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch):
     """
     Skips the github action in the following scenarios:
+    - if the head_branch is from revert pr
     - if the head_branch is not of the build_notes branch format
     - if the base branch is of type provided in any of the lists
 
@@ -92,6 +94,8 @@ def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_bra
     Returns:
     True if it should skip, else False
     """
+    if head_branch.startswith(REVERT_PR_BRANCH_FORMAT):    # skip check for build notes pr
+        return False
     if head_branch.startswith(BUILD_NOTES_PR_BRANCH_FORMAT):    # skip check for build notes pr
         return False
     for pre in prefix_branches:
