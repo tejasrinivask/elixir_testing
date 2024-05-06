@@ -195,6 +195,7 @@ def main():
     markdown_text = event_payload['pull_request']['body']
     # Convert Markdown tables to dictionaries
     result = markdown_tables_to_dicts(markdown_text)
+    # Store Jira id's in jira_list by parsing result
     jira_list = []
     try:
         for each_entry in result["Changes"]["data"]:
@@ -203,6 +204,7 @@ def main():
     except Exception as err:
         print(f"Error while getting Jira ID's -> {err}")
     print(", ".join(jira_list))
+    # Make Jira api call to validate if jira id actually exists
     jira_uname = os.environ.get("JIRA_USERNAME", "")
     jira_password = os.environ.get("JIRA_PASSWORD", "")
     jira_domain = os.environ.get("JIRA_DOMAIN", "")
