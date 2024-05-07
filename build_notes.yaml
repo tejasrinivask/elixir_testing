@@ -1,48 +1,18 @@
 BuildNotes:
   Date: 07-05-2024
-  Tag: v0.0.6
+  Tag: v0.0.7
   Author: elixir_testing
   Changes:
-  - Jira ID: DLP-944
-    Change Description: fixed bug
-    Steps to reproduce: 1. do this<br>2. do that
-    Impact on other features/components: some impact on feat x
-  - Jira ID: DLP-945
-    Change Description: new feat
-    Steps to reproduce: None
-    Impact on other features/components: None
-  - Jira ID: DLP-944
-    Change Description: fixed bug
-    Steps to reproduce: 1. do this<br>2. do that
-    Impact on other features/components: some impact on feat x
-  - Jira ID: DLP-945
-    Change Description: new feat
-    Steps to reproduce: None
-    Impact on other features/components: None
+  - Jira ID: DLP-838
+    Change Description: some changes
+    Steps to reproduce: some steps
+    Impact on other features/components: some impact
+  - Jira ID: DLP-956
+    Change Description: changes for bf1
+    Steps to reproduce: 1. steps<br>2.step2
+    Impact on other features/components: no impact
   Config Changes:
-    New:
-    - component: comp
-      files:
-      - file: this file
-        changes:
-        - keyPath: that key
-          description: some desc
-          mandatory: nope
-          type: str
-          allowed-value: any str
-          default-value: this
-          sample-value: that
-    - component: comp
-      files:
-      - file: this file
-        changes:
-        - keyPath: that key
-          description: some desc
-          mandatory: nope
-          type: str
-          allowed-value: any str
-          default-value: this
-          sample-value: that
+    New: []
     Changed: []
     Deprecated: []
     Removed: []
