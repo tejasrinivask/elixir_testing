@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Validate PR
-        run: python .github/scripts/pr_body_validatior.py '+*(tj-)' '+*(main)'
+        run: python .github/scripts/pr_body_validatior.py '+*(rc_)'
         env:
           GITHUB_EVENT_PATH: ${{ github.event_path }}
           JIRA_DOMAIN: ${{ secrets.JIRA_DOMAIN }}
