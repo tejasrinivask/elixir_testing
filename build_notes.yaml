@@ -1,29 +1,51 @@
 BuildNotes:
-  Date: 06-05-2024
-  Tag: v0.0.5
+  Date: 07-05-2024
+  Tag: v0.0.6
   Author: elixir_testing
   Changes:
-  - Jira ID: CRP-1034
-    Description: Mount point for S3 playout
-  - Jira ID: DLP-29
-    Description: Bug3
+  - Jira ID: DLP-944
+    Change Description: fixed bug
+    Steps to reproduce: 1. do this<br>2. do that
+    Impact on other features/components: some impact on feat x
+  - Jira ID: DLP-945
+    Change Description: new feat
+    Steps to reproduce: None
+    Impact on other features/components: None
+  - Jira ID: DLP-944
+    Change Description: fixed bug
+    Steps to reproduce: 1. do this<br>2. do that
+    Impact on other features/components: some impact on feat x
+  - Jira ID: DLP-945
+    Change Description: new feat
+    Steps to reproduce: None
+    Impact on other features/components: None
   Config Changes:
     New:
-    - component: comp1
+    - component: comp
       files:
-      - file: somefile2.txt
+      - file: this file
         changes:
-        - keyPath: keypath20
-          description: changes for keypath2
-          mandatory: yes
-          type: int
-          allowed-value: 0-10
-          default-value: '5'
-          sample-value: '7'
+        - keyPath: that key
+          description: some desc
+          mandatory: nope
+          type: str
+          allowed-value: any str
+          default-value: this
+          sample-value: that
+    - component: comp
+      files:
+      - file: this file
+        changes:
+        - keyPath: that key
+          description: some desc
+          mandatory: nope
+          type: str
+          allowed-value: any str
+          default-value: this
+          sample-value: that
     Changed: []
     Deprecated: []
     Removed: []
   Deprecated Features: []
   Limitations: []
-  Dependencies:
-  - Dependency: depends on another component version x
+  Dependencies: []
