@@ -41,7 +41,7 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
     if "new" in yaml_data:
         final_yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_NEW] = list()
         files_list = list()
-        for k, v in yaml_data["new"]:
+        for k, v in yaml_data["new"].items():
             files_list.append(
                 {
                     "file": k,
@@ -57,7 +57,7 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
     if "changed" in yaml_data:
         final_yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_MOD] = list()
         files_list = list()
-        for k, v in yaml_data["changed"]:
+        for k, v in yaml_data["changed"].items():
             files_list.append(
                 {
                     "file": k,
@@ -73,7 +73,7 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
     if "removed" in yaml_data:
         final_yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_REM] = list()
         files_list = list()
-        for k, v in yaml_data["removed"]:
+        for k, v in yaml_data["removed"].items():
             files_list.append(
                 {
                     "file": k,
@@ -89,7 +89,7 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
     if "deprecated" in yaml_data:
         final_yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_DEPR] = list()
         files_list = list()
-        for k, v in yaml_data["deprecated"]:
+        for k, v in yaml_data["deprecated"].items():
             files_list.append(
                 {
                     "file": k,
