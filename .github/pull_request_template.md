@@ -20,7 +20,7 @@
 | --- | --- | --- | --- |
 
 ### Dependencies
-| Dependency |
+| Dependencies |
 | --- |
 
 ### Limitations
