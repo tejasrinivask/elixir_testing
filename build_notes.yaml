@@ -1,25 +1,66 @@
-jira:
-  DLP-949:
-  - change2
-new:
-  change1.sh:
-  - keyPath: echo3
-    description: echoes text
-    mandatory: no
-    type: str
-    allowed-value: str
-    default-value: change1
-    sample-value: change1
-limitations: []
-dependencies: []
-Deprecated Features:
-- change0
-changed:
-  change2.txt:
-  - keyPath: echo2
-    description: echoes text
-    mandatory: no
-    type: str
-    allowed-value: str
-    default-value: change1
-    sample-value: change1
+BuildNotes:
+  Date: 09-05-2024
+  Tag: v0.0.10
+  Author: elixir_testing
+  Changes:
+  - Jira ID: DLP-955
+    Description: test, test
+  - Jira ID: DLP-949
+    Description: feat, feat
+  Config Changes:
+    New:
+    - component: elixir_testing
+      files:
+      - file: f1
+        changes:
+        - keyPath: k1
+          description: desc
+          mandatory: no
+          type: int
+          allowed-value: int
+          default-value: '0'
+          sample-value: '5'
+        - keyPath: k2
+          description: desc
+          mandatory: no
+          type: int
+          allowed-value: int
+          default-value: '0'
+          sample-value: '5'
+        - keyPath: k2
+          description: desc
+          mandatory: no
+          type: int
+          allowed-value: int
+          default-value: '0'
+          sample-value: '5'
+        - keyPath: k1
+          description: desc
+          mandatory: no
+          type: int
+          allowed-value: int
+          default-value: '0'
+          sample-value: '5'
+      - file: f2
+        changes:
+        - keyPath: k1
+          description: desc
+          mandatory: no
+          type: int
+          allowed-value: int
+          default-value: '0'
+          sample-value: '5'
+        - keyPath: k1
+          description: desc
+          mandatory: no
+          type: int
+          allowed-value: int
+          default-value: '0'
+          sample-value: '5'
+  Limitations:
+  - lt1
+  - lt1
+  Dependencies:
+  - dep1
+  - dep1
+  Deprecated Features: []
