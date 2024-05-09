@@ -1,13 +1,25 @@
-BuildNotes:
-  Date: 07-05-2024
-  Tag: v0.0.8
-  Author: elixir_testing
-  Changes: []
-  Config Changes:
-    New: []
-    Changed: []
-    Deprecated: []
-    Removed: []
-  Deprecated Features: []
-  Limitations: []
-  Dependencies: []
+jira:
+  DLP-949:
+  - change2
+new:
+  change1.sh:
+  - keyPath: echo3
+    description: echoes text
+    mandatory: no
+    type: str
+    allowed-value: str
+    default-value: change1
+    sample-value: change1
+limitations: []
+dependencies: []
+Deprecated Features:
+- change0
+changed:
+  change2.txt:
+  - keyPath: echo2
+    description: echoes text
+    mandatory: no
+    type: str
+    allowed-value: str
+    default-value: change1
+    sample-value: change1
