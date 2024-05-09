@@ -1,25 +1,13 @@
-jira:
-  DLP-949:
-  - change2
+jira: {}
 new:
-  change1.sh:
-  - keyPath: echo3
-    description: echoes text
+  f1:
+  - keyPath: k1
+    description: desc
     mandatory: no
-    type: str
-    allowed-value: str
-    default-value: change1
-    sample-value: change1
+    type: int
+    allowed-value: int
+    default-value: '0'
+    sample-value: '5'
 limitations: []
 dependencies: []
-Deprecated Features:
-- change0
-changed:
-  change2.txt:
-  - keyPath: echo2
-    description: echoes text
-    mandatory: no
-    type: str
-    allowed-value: str
-    default-value: change1
-    sample-value: change1
+Deprecated Features: []
