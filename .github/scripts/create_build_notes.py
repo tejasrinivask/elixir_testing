@@ -113,15 +113,19 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
 def generate_build_notes(final_dict):
     yaml_data = dict()
     for pr_number, pr_data in final_dict.items():
+        print(pr_number)
+        print(yaml_data)
         if JIRA_CHANGES in pr_data:
-            yaml_data["jira"] = dict()
+            if "jira" not in yaml_data:
+                yaml_data["jira"] = dict()
             for e in pr_data[JIRA_CHANGES]["data"]:
                 if e["Jira ID"] not in yaml_data["jira"]:
                     yaml_data["jira"][e["Jira ID"]] = [e["Change Description"]]
                 else:
                     yaml_data["jira"][e["Jira ID"]].append(e["Change Description"])
         if "New Configs" in pr_data and pr_data["New Configs"]["data"]:
-            yaml_data["new"] = dict()
+            if "new" not in yaml_data:
+                yaml_data["new"] = dict()
             for e in pr_data["New Configs"]["data"]:
                 if e["file"] not in yaml_data["new"]:
                     yaml_data["new"][e["file"]] = [
@@ -148,7 +152,8 @@ def generate_build_notes(final_dict):
                         }
                     )
         if "Changed Configs" in pr_data and pr_data["Changed Configs"]["data"]:
-            yaml_data["changed"] = dict()
+            if "changed" not in yaml_data:
+                yaml_data["changed"] = dict()
             for e in pr_data["Changed Configs"]["data"]:
                 if e["file"] not in yaml_data["changed"]:
                     yaml_data["changed"][e["file"]] = [
@@ -175,7 +180,8 @@ def generate_build_notes(final_dict):
                         }
                     )
         if "Removed Configs" in pr_data and pr_data["Removed Configs"]["data"]:
-            yaml_data["removed"] = dict()
+            if "removed" not in yaml_data:
+                yaml_data["removed"] = dict()
             for e in pr_data["Removed Configs"]["data"]:
                 if e["file"] not in yaml_data["changed"]:
                     yaml_data["removed"][e["file"]] = [
@@ -192,7 +198,8 @@ def generate_build_notes(final_dict):
                         }
                     )
         if "Deprecated Configs" in pr_data and pr_data["Deprecated Configs"]["data"]:
-            yaml_data["deprecated"] = dict()
+            if "deprecated" not in yaml_data:
+                yaml_data["deprecated"] = dict()
             for e in pr_data["Deprecated Configs"]["data"]:
                 if e["file"] not in yaml_data["changed"]:
                     yaml_data["deprecated"][e["file"]] = [
@@ -209,15 +216,18 @@ def generate_build_notes(final_dict):
                         }
                     )
         if LIMITATIONS in pr_data:
-            yaml_data["limitations"] = list()
+            if "limitations" not in yaml_data:
+                yaml_data["limitations"] = list()
             for e in pr_data[LIMITATIONS]["data"]:
                 yaml_data["limitations"].append(e["Limitations"])
         if DEPENDENCIES in pr_data:
-            yaml_data["dependencies"] = list()
+            if "dependencies" not in yaml_data:
+                yaml_data["dependencies"] = list()
             for e in pr_data[DEPENDENCIES]["data"]:
                 yaml_data["dependencies"].append(e["Dependencies"])
         if DEPRECATED_FEATURES in pr_data:
-            yaml_data["Deprecated Features"] = list()
+            if "Deprecated Features" not in yaml_data:
+                yaml_data["Deprecated Features"] = list()
             for e in pr_data[DEPRECATED_FEATURES]["data"]:
                 yaml_data["Deprecated Features"].append(e["Deprecated Features"])
     return yaml_data
@@ -339,6 +349,8 @@ def get_pr_body(pr_info_list):
     for item in pr_info_list:
         number = item['number']
         data = markdown_tables_to_dicts(item['body'])
+        if not data:
+            continue
         final_dict[number] = data
     return final_dict
 
@@ -422,17 +434,11 @@ def main():
             ).json()
             pr_info_list.append(pr_info)
     final_dict = get_pr_body(pr_info_list)
-    print("final_dict")
-    print(final_dict)
     yaml_data = generate_build_notes(final_dict)
-    print("yaml_data")
-    print(yaml_data)
     final_yaml_data = cleanup_generated_yaml_data(yaml_data, DATE, CURRENT_TAG, GIT_REPO.split('/')[-1])
-    print("final_yaml_data")
-    print(final_yaml_data)
     yaml = YAML()
     with open('build_notes.yaml', 'w') as outfile:
-        yaml.dump(yaml_data, outfile)
+        yaml.dump(final_yaml_data, outfile)
 
 
 if __name__ == '__main__':
