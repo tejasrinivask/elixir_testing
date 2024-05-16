@@ -1,26 +1,45 @@
 BuildNotes:
   Date: 16-05-2024
-  Tag: v1.0.0
+  Tag: v1.2.0
   Author: elixir_testing
   Changes:
+  - Jira ID: CRP-1631
+    Description: Automated Build note, PR Template standardisation across CLOUDPORT
+      component repos.
+  - Jira ID: CPRE-6067
+    Description: Sinclair CRR (BYOC) - HZTV (HZTV_103) DR box not downloading assets
+      since 01st May
   - Jira ID: DLP-238
-    Description: step1 and step 2
-  - Jira ID: DLP-247
-    Description: step5 and step 7
+    Description: Fix documentation for elixir
+  - Jira ID: DLP-41
+    Description: Optimise number of calls to K8S
+  - Jira ID: DLP-947
+    Description: some bug2 changes
+  - Jira ID: CRP-1571
+    Description: Common pull request template and github action for pull request validation
+  - Jira ID: NPIE-2562
+    Description: Error in Secondary Player Monitoring UI.
   Config Changes:
     New:
     - component: elixir_testing
       files:
-      - file: feat_1.0.0
+      - file: feat_1.1.0
         changes:
-        - keyPath: key
-          description: some description
+        - keyPath: key1
+          description: some description1
           mandatory: no
           type: str
           allowed-value: any value
           default-value: aaa
           sample-value: bbb
+        - keyPath: key11
+          description: some description11
+          mandatory: yes
+          type: int
+          allowed-value: any value1
+          default-value: aaa1
+          sample-value: bbb1
   Limitations: []
   Dependencies:
-  - this component
+  - dependency1
   Deprecated Features: []
