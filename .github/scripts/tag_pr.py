@@ -48,7 +48,7 @@ def get_release_body_from_build_notes():
         with open('build_notes.yaml', 'r') as fh:
             data = yaml.load(fh)
         for each_entry in data['BuildNotes']['Changes']:
-            jira_body.append(f"https://amagiengg.atlassian.net/browse/{each_entry['JiraID']}")
+            jira_body.append(f"https://amagiengg.atlassian.net/browse/{each_entry['Jira ID']}")
     except Exception as e:
         print(f'Error loading build_notes, err: {e}')
         return ""
@@ -82,13 +82,14 @@ def main():
     sha = sys.argv[4]
     token = os.environ.get("GH_TOKEN", None)
     try:
-        create_tag(tag_name, branch, repo_full_name, token, sha)
+        # create_tag(tag_name, branch, repo_full_name, token, sha)
         url = get_release_url(repo_full_name, tag_name, token)
         if not url:
             print("Getting url failed, not updating release details")
             sys.exit(0)
         release_id = url.split('/')[-1]
         new_body = get_release_body_from_build_notes()
+        print(new_body)
         update_release(repo_full_name, release_id, new_body, token)
     except Exception as err:
         print (f"Failed to create tag with error: {err}")
