@@ -25,7 +25,6 @@ JIRA_CHANGES            = "Changes"
 MAIN_JIRA_LIST          = ["CRP", "CPRE", "CLI", "NPIE", "PIE"]
 
 def cleanup_generated_yaml_data(yaml_data, date, tag, author):
-    print(yaml_data)
     final_yaml_data = {
         BUILD_NOTES:{
             BUILD_DATE: date,
@@ -160,6 +159,9 @@ def get_jira_ids_for_multiple_entries(data):
 def generate_build_notes(final_dict):
     yaml_data = dict()
     for pr_number, pr_data in final_dict.items():
+        print(yaml_data)
+        # print(pr_number)
+        # print(pr_data)
         if JIRA_CHANGES in pr_data:
             if "jira" not in yaml_data:
                 yaml_data["jira"] = dict()
