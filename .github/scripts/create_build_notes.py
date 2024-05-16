@@ -405,8 +405,11 @@ def main():
             ).json()
             pr_info_list.append(pr_info)
     final_dict = get_pr_body(pr_info_list)
+    print(final_dict)
     yaml_data = generate_build_notes(final_dict)
+    print(yaml_data)
     final_yaml_data = cleanup_generated_yaml_data(yaml_data, DATE, CURRENT_TAG, GIT_REPO.split('/')[-1])
+    print(final_yaml_data)
     yaml = YAML()
     with open('build_notes.yaml', 'w') as outfile:
         yaml.dump(final_yaml_data, outfile)
