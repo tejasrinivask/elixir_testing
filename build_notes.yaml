@@ -1,66 +1,26 @@
 BuildNotes:
-  Date: 09-05-2024
-  Tag: v0.0.10
+  Date: 16-05-2024
+  Tag: v1.0.0
   Author: elixir_testing
   Changes:
-  - Jira ID: DLP-955
-    Description: test, test
-  - Jira ID: DLP-949
-    Description: feat, feat
+  - Jira ID: DLP-238
+    Description: step1 and step 2
+  - Jira ID: DLP-247
+    Description: step5 and step 7
   Config Changes:
     New:
     - component: elixir_testing
       files:
-      - file: f1
+      - file: feat_1.0.0
         changes:
-        - keyPath: k1
-          description: desc
+        - keyPath: key
+          description: some description
           mandatory: no
-          type: int
-          allowed-value: int
-          default-value: '0'
-          sample-value: '5'
-        - keyPath: k2
-          description: desc
-          mandatory: no
-          type: int
-          allowed-value: int
-          default-value: '0'
-          sample-value: '5'
-        - keyPath: k2
-          description: desc
-          mandatory: no
-          type: int
-          allowed-value: int
-          default-value: '0'
-          sample-value: '5'
-        - keyPath: k1
-          description: desc
-          mandatory: no
-          type: int
-          allowed-value: int
-          default-value: '0'
-          sample-value: '5'
-      - file: f2
-        changes:
-        - keyPath: k1
-          description: desc
-          mandatory: no
-          type: int
-          allowed-value: int
-          default-value: '0'
-          sample-value: '5'
-        - keyPath: k1
-          description: desc
-          mandatory: no
-          type: int
-          allowed-value: int
-          default-value: '0'
-          sample-value: '5'
-  Limitations:
-  - lt1
-  - lt1
+          type: str
+          allowed-value: any value
+          default-value: aaa
+          sample-value: bbb
+  Limitations: []
   Dependencies:
-  - dep1
-  - dep1
+  - this component
   Deprecated Features: []
