@@ -342,14 +342,16 @@ def get_payload_for_generating_release_notes(tag, base):
         "target_commitish": base,
     }
     path = 'taglist.yaml'
+    data = {}
     if not os.path.exists(path) or not os.path.isfile(path):
         print(f"{path} doesn't exist, creating ...")
         with open(path, 'w') as fh:
             yaml.dump(default_data, fh)
         return payload_json, True
-    with open(path, 'w+') as fh:
+    with open(path, 'r') as fh:
+        data = yaml.load(fh)
+    with open(path, 'w') as fh:
         try:
-            data = yaml.load(fh)
             last_tag = data['Tag List'][-1]
             payload_json["previous_tag_name"] = last_tag
             data['Tag List'].append(tag)
