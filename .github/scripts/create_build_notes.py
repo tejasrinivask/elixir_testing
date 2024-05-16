@@ -380,6 +380,7 @@ def main():
     payload, status = get_payload_for_generating_release_notes(CURRENT_TAG, BASE_BRANCH)
     if not status:
         sys.exit(1)
+    print(payload)
     pr_list_res = requests.post(
         f"https://api.github.com/repos/{GIT_REPO}/releases/generate-notes",
         headers={
@@ -389,6 +390,7 @@ def main():
         },
         json=payload,
     ).json()
+    print(pr_list_res)
     lines = pr_list_res["body"].splitlines()
     pr_list = []
     pr_info_list = []
