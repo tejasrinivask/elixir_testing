@@ -25,6 +25,7 @@ JIRA_CHANGES            = "Changes"
 MAIN_JIRA_LIST          = ["CRP", "CPRE", "CLI", "NPIE", "PIE"]
 
 def cleanup_generated_yaml_data(yaml_data, date, tag, author):
+    print(yaml_data)
     final_yaml_data = {
         BUILD_NOTES:{
             BUILD_DATE: date,
