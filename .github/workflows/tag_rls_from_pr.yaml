@@ -17,7 +17,9 @@ jobs:
           ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Install Dependencies
-        run: pip install PyGithub
+        run: |
+          pip install PyGithub
+          pip install ruamel.yaml
 
       - name: Create tag from Pr
         if: github.event.pull_request.merged == true
