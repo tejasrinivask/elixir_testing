@@ -4,21 +4,27 @@ import os
 import re
 import requests
 import sys
+from jira import Jira
 
 BUILD_NOTES_PR_BRANCH_FORMAT = "rc-build-notes-"
 REVERT_PR_BRANCH_FORMAT = "revert-"
 
-def check_if_jira_exists(username, password, domain, issue_id):
-    url = f"https://{domain}/rest/api/3/issue/{issue_id}"
-    response = requests.get(url, auth=(username, password))
-    if response.status_code == 404:
+def check_if_jira_exists(password, issue_id):
+    jira = Jira(password)
+    response = jira.get(issue_id)
+    if not response:
         return False
     return True
+    # url = f"https://{domain}/rest/api/3/issue/{issue_id}"
+    # response = requests.get(url, auth=(username, password))
+    # if response.status_code == 404:
+    #     return False
+    # return True
 
-def thread_execution_for_jira(username, password, domain, issue_list):
+def thread_execution_for_jira(password, issue_list):
     return_list = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_item = {executor.submit(check_if_jira_exists, username, password, domain, item): item for item in issue_list}
+        future_to_item = {executor.submit(check_if_jira_exists, password, item): item for item in issue_list}
         for future in concurrent.futures.as_completed(future_to_item):
             item = future_to_item[future]
             try:
@@ -42,7 +48,7 @@ def markdown_tables_to_dicts(markdown_text):
         if re.match(r'^#+\s+\w+', line):  # Check for headings
             current_table = None
             table_name = line.strip('#').strip()
-            if table_name == "PR changes":
+            if table_name == "Additional Info":
                 skip_section = True
                 continue
             else:
@@ -200,7 +206,11 @@ def main():
     try:
         for each_entry in result["Changes"]["data"]:
             if each_entry["Jira ID"] != "":
-                jira_list.append(each_entry["Jira ID"])
+                if "," in each_entry["Jira ID"]:
+                    for item in each_entry["Jira ID"].split(","):
+                        jira_list.append(item.strip())
+                else:
+                    jira_list.append(each_entry["Jira ID"])
     except Exception as err:
         print(f"Error while getting Jira ID's -> {err}")
     print(", ".join(jira_list))
@@ -210,8 +220,8 @@ def main():
     jira_domain = os.environ.get("JIRA_DOMAIN", "")
     if not jira_uname or not jira_password or not jira_domain:
         print("Skipping jira check as jira credentials are not")
-        return
-    final_list = thread_execution_for_jira(jira_uname, jira_password, jira_domain, jira_list)
+        exit(0)
+    final_list = thread_execution_for_jira(jira_password, jira_list)
     if not final_list:
         print(f"No valid jira id's, exiting ...")
         exit(1)

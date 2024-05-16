@@ -1,6 +1,6 @@
 ### Changes
-| Jira ID | Component name | Change Description | Steps to reproduce & validate | Impact on other features/components |
-| --- | --- | --- | --- | --- |
+| Jira ID | Type | Component name | Change Description | Steps to reproduce & validate | Impact on other features/components |
+| --- | --- | --- | --- | --- | --- |
 
 ### Config Changes
 #### New Configs
@@ -30,3 +30,5 @@
 ### Deprecated Features
 | Deprecated Features |
 | --- |
+
+### Additional Info

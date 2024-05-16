@@ -2,6 +2,7 @@ import json
 import requests
 import sys
 
+# TODO: update payload data with user provided data
 
 class Jira():
 
@@ -22,15 +23,17 @@ class Jira():
         }
         # Send GET request
         response = requests.get(url, headers=headers)
-        if response.status_code != 200:
-            return False, ""
+        if response.status_code != 200:    # issue doesn't exist or api key doesn't have permissions
+            return {}
+            # return False, ""
         response_data = response.json()
-        try:
-            current_payload = response_data['fields']['customfield_12090']
-        except Exception as err:
-            print(f'Issue getting table for {issue_key}, error: {err}')
-            return True, ""
-        return True, current_payload
+        return response_data
+        # try:
+        #     current_payload = response_data['fields']['customfield_12090']
+        # except Exception as err:    # doesn't have the required custom field
+        #     print(f'Issue getting table for {issue_key}, error: {err}')
+        #     return True, ""
+        # return True, current_payload
 
     def put(self, issue_key, payload):
         url = f'{self.url}/{issue_key}'
@@ -52,7 +55,7 @@ class Jira():
         else:
             print(f"Failed to update custom field. Status code: {response.status_code}, Error: {response.text}")
 
-    def generate_jira_payload(self, data):
+    def generate_jira_payload(self, data):    # returns dict of data
         if not data:
             return self.jira_custom_field_to_dict(self.default_payload)
         else:
@@ -69,16 +72,22 @@ class Jira():
         return custom_field_dict
 
 def main():
-    token = sys.argv[1]
-    issue_key = sys.argv[2]
+    token = sys.argv[1]    # Jira account API key
+    issue_key = sys.argv[2]    # Jira ID
     jira = Jira(token)
-    issue_exists, current_custom_field_data = jira.get(issue_key)
-    if not issue_exists:
-        print(f"Jira issue: {issue_key} does not exist")
+    # issue_exists, current_custom_field_data = jira.get(issue_key)
+    response_data = jira.get(issue_key)
+    if not response_data:
+        print(f"Jira issue: {issue_key} does not exist or user doesn't have permissions to access the issue")
         sys.exit(1)
-    jira_payload_data = jira.generate_jira_payload(current_custom_field_data)
-    # print(jira_payload_data)
-    jira.put(issue_key, payload=jira_payload_data)
+    try:
+        current_payload = response_data['fields']['customfield_12090']
+    except Exception as err:    # doesn't have the required custom field
+        current_payload = ""
+    updated_jira_payload_data = jira.generate_jira_payload(current_payload)
+    # TODO:
+    # update payload data
+    jira.put(issue_key, payload=updated_jira_payload_data)
 
 
 if __name__ == '__main__':

@@ -5,7 +5,9 @@ import os
 import re
 import requests
 import sys
+from collections import defaultdict
 from ruamel.yaml import YAML
+from jira import Jira
 
 
 BUILD_NOTES             = "BuildNotes"
@@ -20,6 +22,7 @@ LIMITATIONS             = "Limitations"
 DEPENDENCIES            = "Dependencies"
 COMPONENT_RELEASES      = "Component Releases"
 JIRA_CHANGES            = "Changes"
+MAIN_JIRA_LIST          = ["CRP", "CPRE", "CLI", "NPIE", "PIE"]
 
 def cleanup_generated_yaml_data(yaml_data, date, tag, author):
     final_yaml_data = {
@@ -110,19 +113,68 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
         final_yaml_data[BUILD_NOTES][DEPRECATED_FEATURES] = yaml_data["Deprecated Features"]
     return final_yaml_data
 
+
+def get_jira_ids_for_multiple_entries(data):
+    """
+    CRP, GAMMA -> Only CRP
+    CRP, CPRE, GAMMA -> CRP & CPRE in 2 rows (ignore GAMMA)
+    GAMMA -> Picked as entry
+    CRP, CPRE, NPIE -> Split into 3 rows
+    GAMMA, GAMMA -> Split into 2 rows and fill description from Jira
+    """
+    api_token = os.environ.get("JIRA_PASSWORD", "")
+    jira = Jira(api_token)
+    return_dict = {}
+    flag = False
+    jira_ids_list = [x.strip() for x in data.split(",")]
+    d = defaultdict(list)
+    """
+    d = {
+        "CRP": ["CRP-1", "CRP-2"],
+        "GAMMA": ["GAMMA-1"],
+        "NPIE": ["NPIE-1"],
+    }
+    """
+    comp_ticket_count = 0
+    for k, v in [(i.split('-')[0], i) for i in jira_ids_list]:
+        d[k].append(v)
+        if k not in MAIN_JIRA_LIST:
+            comp_ticket_count += 1
+    ignore_comp_tickets = False
+    if comp_ticket_count != len(jira_ids_list):
+        ignore_comp_tickets = True
+    for k, v in d.items():
+        if k not in MAIN_JIRA_LIST and ignore_comp_tickets:
+            continue
+        else:
+            for each_id in v:
+                try:
+                    data = jira.get(each_id)    # data should always exist as pr is validated & merged
+                    return_dict[each_id] = data['fields']['summary']
+                except Exception as err:
+                    print(f'Failed getting data for issue -> {each_id} with error {err}')
+                    continue
+    return return_dict
+
 def generate_build_notes(final_dict):
     yaml_data = dict()
     for pr_number, pr_data in final_dict.items():
-        print(pr_number)
-        print(yaml_data)
         if JIRA_CHANGES in pr_data:
             if "jira" not in yaml_data:
                 yaml_data["jira"] = dict()
             for e in pr_data[JIRA_CHANGES]["data"]:
-                if e["Jira ID"] not in yaml_data["jira"]:
-                    yaml_data["jira"][e["Jira ID"]] = [e["Change Description"]]
+                if "," in e["Jira ID"]:    # handle comma separated jira ids
+                    d = get_jira_ids_for_multiple_entries(e["Jira ID"])
+                    for issue, desc in d.items():
+                        if issue not in yaml_data["jira"]:
+                            yaml_data['jira'][issue] = [desc]
+                        else:
+                            yaml_data['jira'][issue].append(desc)
                 else:
-                    yaml_data["jira"][e["Jira ID"]].append(e["Change Description"])
+                    if e["Jira ID"] not in yaml_data["jira"]:
+                        yaml_data["jira"][e["Jira ID"]] = [e["Change Description"]]
+                    else:
+                        yaml_data["jira"][e["Jira ID"]].append(e["Change Description"])
         if "New Configs" in pr_data and pr_data["New Configs"]["data"]:
             if "new" not in yaml_data:
                 yaml_data["new"] = dict()
@@ -232,118 +284,6 @@ def generate_build_notes(final_dict):
                 yaml_data["Deprecated Features"].append(e["Deprecated Features"])
     return yaml_data
 
-
-# def generate_build_notes(final_dict, date, tag, author):
-#     yaml_data = dict()
-#     for pr_number, pr_data in final_dict.items():
-#         if JIRA_CHANGES in pr_data:
-#             for entry in pr_data[JIRA_CHANGES]["data"]:
-#                 yaml_data[BUILD_NOTES][JIRA_CHANGES].append(entry)
-#         if "New Configs" in pr_data and pr_data["New Configs"]["data"]:
-#             component = pr_data["New Configs"]["data"][0]["component"]
-#             files = []
-#             for entry in pr_data["New Configs"]["data"]:
-#                 files.append(
-#                     {
-#                         "file": entry["file"],
-#                         "changes": [
-#                             {
-#                                 "keyPath": entry["keyPath"],
-#                                 "description": entry["description"],
-#                                 "mandatory": entry["mandatory"],
-#                                 "type": entry["type"],
-#                                 "allowed-value": entry["allowed-value"],
-#                                 "default-value": entry["default-value"],
-#                                 "sample-value": entry["sample-value"],
-#                             }
-#                         ]
-#                     }
-#                 )
-#             yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_NEW].append(
-#                 {
-#                     "component": component,
-#                     "files": files,
-#                 }
-#             )
-#         if "Changed Configs" in pr_data and pr_data["Changed Configs"]["data"]:
-#             component = pr_data["Changed Configs"]["data"][0]["component"]
-#             files = []
-#             for entry in pr_data["Changed Configs"]["data"]:
-#                 files.append(
-#                     {
-#                         "file": entry["file"],
-#                         "changes": [
-#                             {
-#                                 "keyPath": entry["keyPath"],
-#                                 "description": entry["description"],
-#                                 "mandatory": entry["mandatory"],
-#                                 "type": entry["type"],
-#                                 "allowed-value": entry["allowed-value"],
-#                                 "default-value": entry["default-value"],
-#                                 "sample-value": entry["sample-value"],
-#                             }
-#                         ]
-#                     }
-#                 )
-#             yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_MOD].append(
-#                 {
-#                     "component": component,
-#                     "files": files,
-#                 }
-#             )
-#         if "Removed Configs" in pr_data and pr_data["Removed Configs"]["data"]:
-#             component = pr_data["Removed Configs"]["data"][0]["component"]
-#             files = []
-#             for entry in pr_data["Removed Configs"]["data"]:
-#                 files.append(
-#                     {
-#                         "file": entry["file"],
-#                         "changes": [
-#                             {
-#                                 "keyPath": entry["keyPath"],
-#                                 "description": entry["description"],
-#                             }
-#                         ]
-#                     }
-#                 )
-#             yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_REM].append(
-#                 {
-#                     "component": component,
-#                     "files": files,
-#                 }
-#             )
-#         if "Deprecated Configs" in pr_data and pr_data["Deprecated Configs"]["data"]:
-#             component = pr_data["Deprecated Configs"]["data"][0]["component"]
-#             files = []
-#             for entry in pr_data["Deprecated Configs"]["data"]:
-#                 files.append(
-#                     {
-#                         "file": entry["file"],
-#                         "changes": [
-#                             {
-#                                 "keyPath": entry["keyPath"],
-#                                 "description": entry["description"],
-#                             }
-#                         ]
-#                     }
-#                 )
-#             yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_DEPR].append(
-#                 {
-#                     "component": component,
-#                     "files": files,
-#                 }
-#             )
-#         if LIMITATIONS in pr_data:
-#             for entry in pr_data[LIMITATIONS]["data"]:
-#                 yaml_data[BUILD_NOTES][LIMITATIONS].append(entry)
-#         if DEPENDENCIES in pr_data:
-#             for entry in pr_data[DEPENDENCIES]["data"]:
-#                 yaml_data[BUILD_NOTES][DEPENDENCIES].append(entry)
-#         if DEPRECATED_FEATURES in pr_data:
-#             for entry in pr_data[DEPRECATED_FEATURES]["data"]:
-#                 yaml_data[BUILD_NOTES][DEPRECATED_FEATURES].append(entry)
-#     return yaml_data
-
 def get_pr_body(pr_info_list):
     final_dict = {}
     for item in pr_info_list:
@@ -393,18 +333,48 @@ def markdown_tables_to_dicts(markdown_text):
                             current_table['skip_rows_count'] -= 1
     return tables
 
+def get_payload_for_generating_release_notes(tag, base):
+    # open taglist.yaml
+    yaml = YAML()
+    default_data = {'Tag List': [tag]}
+    payload_json={
+        "tag_name": tag,
+        "target_commitish": base,
+    }
+    path = 'taglist.yaml'
+    if not os.path.exists(path) or not os.path.isfile(path):
+        print(f"{path} doesn't exist, creating ...")
+        with open(path, 'w') as fh:
+            yaml.dump(default_data, fh)
+        return payload_json, True
+    with open(path, 'w+') as fh:
+        try:
+            data = yaml.load(fh)
+            last_tag = data['Tag List'][-1]
+            payload_json["previous_tag_name"] = last_tag
+            data['Tag List'].append(tag)
+            yaml.dump(data, fh)
+        except Exception as e:
+            print(f"falied getting last tag with error -> {e}")
+            return {}, False
+    return payload_json, True
+
+
 def main():
     GIT_REPO = sys.argv[1]
     BASE_BRANCH = sys.argv[2]
-    LAST_TAG = sys.argv[3]
-    CURRENT_TAG = sys.argv[4]
-    DATE = sys.argv[5]
+    # LAST_TAG = sys.argv[3]
+    CURRENT_TAG = sys.argv[3]
+    DATE = sys.argv[4]
     GH_TOKEN = os.environ.get('GH_TOKEN', None)
     if not GH_TOKEN:
         print("Not able to get GH_TOKEN")
         exit(1)
     # in body "target_commitish" is optional if the "tag_name" already exists
     # if "tag_name" doesn't exist then "target_commitish" is used
+    payload, status = get_payload_for_generating_release_notes(CURRENT_TAG, BASE_BRANCH)
+    if not status:
+        sys.exit(1)
     pr_list_res = requests.post(
         f"https://api.github.com/repos/{GIT_REPO}/releases/generate-notes",
         headers={
@@ -412,11 +382,7 @@ def main():
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
         },
-        json={
-            "tag_name": CURRENT_TAG,
-            "target_commitish": BASE_BRANCH,
-            "previous_tag_name": LAST_TAG,
-        },
+        json=payload,
     ).json()
     lines = pr_list_res["body"].splitlines()
     pr_list = []
