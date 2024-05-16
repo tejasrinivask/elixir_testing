@@ -404,6 +404,7 @@ def main():
             },
             ).json()
             pr_info_list.append(pr_info)
+    print(pr_info_list)
     final_dict = get_pr_body(pr_info_list)
     print(final_dict)
     yaml_data = generate_build_notes(final_dict)
