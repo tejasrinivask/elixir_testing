@@ -363,7 +363,7 @@ def get_payload_for_generating_release_notes(tag, base):
             return {}, False
     return payload_json, True
 
-def create_release_files_with_pr_list(pr_list):
+def create_release_files_with_pr_list(pr_list, DATE, CURRENT_TAG, GIT_REPO):
     pr_info_list = []
     for each_pr in pr_list:
         pr_info = requests.get(
