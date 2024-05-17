@@ -10,6 +10,7 @@ from ruamel.yaml import YAML
 from jira import Jira
 
 
+GH_TOKEN                = os.environ.get('GH_TOKEN', None)
 BUILD_NOTES             = "BuildNotes"
 BUILD_DATE              = "Date"
 CONFIG_CHANGES          = "Config Changes"
@@ -153,16 +154,13 @@ def get_jira_ids_for_multiple_entries(data):
                     data = jira.get(each_id)    # data should always exist as pr is validated & merged
                     return_dict[each_id] = data['fields']['summary']
                 except Exception as err:
-                    print(f'Failed getting data for issue -> {each_id} with error {err}')
+                    print(f"Failed getting data for issue -> {each_id} with error {err}")
                     continue
     return return_dict
 
 def generate_build_notes(final_dict):
     yaml_data = dict()
     for pr_number, pr_data in final_dict.items():
-        print(yaml_data)
-        # print(pr_number)
-        # print(pr_data)
         if JIRA_CHANGES in pr_data:
             if "jira" not in yaml_data:
                 yaml_data["jira"] = dict()
@@ -365,6 +363,23 @@ def get_payload_for_generating_release_notes(tag, base):
             return {}, False
     return payload_json, True
 
+def create_release_files_with_pr_list(pr_list):
+    pr_info_list = []
+    for each_pr in pr_list:
+        pr_info = requests.get(
+        f"https://api.github.com/repos/{GIT_REPO}/pulls/{each_pr}",
+        headers={
+            "Authorization": f"Bearer {GH_TOKEN}",
+            "Accept": "application/vnd.github.v3+json",
+        },
+        ).json()
+        pr_info_list.append(pr_info)
+    final_dict = get_pr_body(pr_info_list)
+    yaml_data = generate_build_notes(final_dict)
+    final_yaml_data = cleanup_generated_yaml_data(yaml_data, DATE, CURRENT_TAG, GIT_REPO.split('/')[-1])
+    yaml = YAML()
+    with open('build_notes.yaml', 'w') as outfile:
+        yaml.dump(final_yaml_data, outfile)
 
 def main():
     GIT_REPO = sys.argv[1]
@@ -372,7 +387,6 @@ def main():
     # LAST_TAG = sys.argv[3]
     CURRENT_TAG = sys.argv[3]
     DATE = sys.argv[4]
-    GH_TOKEN = os.environ.get('GH_TOKEN', None)
     if not GH_TOKEN:
         print("Not able to get GH_TOKEN")
         exit(1)
@@ -381,7 +395,6 @@ def main():
     payload, status = get_payload_for_generating_release_notes(CURRENT_TAG, BASE_BRANCH)
     if not status:
         sys.exit(1)
-    print(payload)
     pr_list_res = requests.post(
         f"https://api.github.com/repos/{GIT_REPO}/releases/generate-notes",
         headers={
@@ -391,33 +404,13 @@ def main():
         },
         json=payload,
     ).json()
-    print(pr_list_res)
     lines = pr_list_res["body"].splitlines()
     pr_list = []
-    pr_info_list = []
     for line in lines:
         if line.startswith('* '):
             res = line.rsplit('/',1)
             pr_list.append(res[1])
-            pr_info = requests.get(
-            f"https://api.github.com/repos/{GIT_REPO}/pulls/{res[1]}",
-            headers={
-                "Authorization": f"Bearer {GH_TOKEN}",
-                "Accept": "application/vnd.github.v3+json",
-            },
-            ).json()
-            pr_info_list.append(pr_info)
-    print(pr_info_list)
-    final_dict = get_pr_body(pr_info_list)
-    print(final_dict)
-    yaml_data = generate_build_notes(final_dict)
-    print(yaml_data)
-    final_yaml_data = cleanup_generated_yaml_data(yaml_data, DATE, CURRENT_TAG, GIT_REPO.split('/')[-1])
-    print(final_yaml_data)
-    yaml = YAML()
-    with open('build_notes.yaml', 'w') as outfile:
-        yaml.dump(final_yaml_data, outfile)
-
+    create_release_files_with_pr_list(pr_list)
 
 if __name__ == '__main__':
     main()
