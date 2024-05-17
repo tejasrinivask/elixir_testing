@@ -34,13 +34,14 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
             CONFIG_CHANGES:{},
         }
     }
-    for k, v in yaml_data["jira"].items():
-        final_yaml_data[BUILD_NOTES][JIRA_CHANGES].append(
-            {
-                "Jira ID": k,
-                "Description": ", ".join(v)
-            }
-        )
+    if "jira" in yaml_data:
+        for k, v in yaml_data["jira"].items():
+            final_yaml_data[BUILD_NOTES][JIRA_CHANGES].append(
+                {
+                    "Jira ID": k,
+                    "Description": ", ".join(v)
+                }
+            )
     if "new" in yaml_data:
         final_yaml_data[BUILD_NOTES][CONFIG_CHANGES][CONFIG_CHANGES_NEW] = list()
         files_list = list()

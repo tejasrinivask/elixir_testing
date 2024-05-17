@@ -83,7 +83,7 @@ def main():
     sha = sys.argv[4]
     token = os.environ.get("GH_TOKEN", None)
     try:
-        # create_tag(tag_name, branch, repo_full_name, token, sha)
+        create_tag(tag_name, branch, repo_full_name, token, sha)
         url = get_release_url(repo_full_name, tag_name, token)
         if not url:
             print("Getting url failed, not updating release details")
