@@ -1,45 +1,48 @@
 BuildNotes:
-  Date: 16-05-2024
-  Tag: v1.2.0
+  Date: 17-05-2024
+  Tag: v1.3.0
   Author: elixir_testing
   Changes:
-  - Jira ID: CRP-1631
-    Description: Automated Build note, PR Template standardisation across CLOUDPORT
-      component repos.
-  - Jira ID: CPRE-6067
-    Description: Sinclair CRR (BYOC) - HZTV (HZTV_103) DR box not downloading assets
-      since 01st May
+  - Jira ID: CRP-1632
+    Description: 4.8 - Edit panel should get displayed when Hole is selected
+  - Jira ID: CPRE-391
+    Description: Behaviour of Live auto extensions
   - Jira ID: DLP-238
     Description: Fix documentation for elixir
   - Jira ID: DLP-41
     Description: Optimise number of calls to K8S
   - Jira ID: DLP-947
-    Description: some bug2 changes
-  - Jira ID: CRP-1571
-    Description: Common pull request template and github action for pull request validation
-  - Jira ID: NPIE-2562
-    Description: Error in Secondary Player Monitoring UI.
+    Description: some bug230 changes
+  - Jira ID: CRP-1580
+    Description: Zero EBS provisioning for non-player pods (transcoder, tardis, dd,
+      etc...)
+  - Jira ID: NPIE-3649
+    Description: WABM - 'Coming Up' window shows Recue
+  - Jira ID: DELTA-721
+    Description: bug130
+  - Jira ID: DLP-494
+    Description: description for this feature130
   Config Changes:
     New:
     - component: elixir_testing
       files:
-      - file: feat_1.1.0
+      - file: feat_1.3.0
         changes:
-        - keyPath: key1
-          description: some description1
+        - keyPath: key130
+          description: some description301
           mandatory: no
           type: str
           allowed-value: any value
           default-value: aaa
           sample-value: bbb
-        - keyPath: key11
-          description: some description11
+        - keyPath: key1130
+          description: some description1301
           mandatory: yes
           type: int
           allowed-value: any value1
-          default-value: aaa1
-          sample-value: bbb1
+          default-value: aaa301
+          sample-value: bbb301
   Limitations: []
   Dependencies:
-  - dependency1
+  - dependency130
   Deprecated Features: []
