@@ -410,7 +410,7 @@ def main():
         if line.startswith('* '):
             res = line.rsplit('/',1)
             pr_list.append(res[1])
-    create_release_files_with_pr_list(pr_list)
+    create_release_files_with_pr_list(pr_list, DATE, CURRENT_TAG, GIT_REPO)
 
 if __name__ == '__main__':
     main()
