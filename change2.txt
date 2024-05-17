@@ -1,3 +1,0 @@
-added change2
-key2 = val2
-key1 = val21
