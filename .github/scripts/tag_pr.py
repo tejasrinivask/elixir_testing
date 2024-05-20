@@ -46,8 +46,8 @@ def update_release(repo_full_name, release_id, new_body, access_token):
 def get_release_body_from_build_notes():
     yaml = YAML()
     body = "### Jira Changes\n"
-    body = "| Jira ID | Type | Description |\n"
-    body = "| --- | --- | --- |\n"
+    body += "| Jira ID | Type | Description |\n"
+    body += "| --- | --- | --- |\n"
     try:
         with open("build_notes.yaml", mode="r", encoding="utf-8") as fh:
             data = yaml.load(fh)
