@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
-from github import Github
 import json
 import os
 import sys
+import time
+
 import requests
+from github import Github
 from requests.auth import HTTPBasicAuth
 from ruamel.yaml import YAML
-import time
+
 
 def get_release_url(repo_full_name, tag_name, access_token):
     url = f"https://api.github.com/repos/{repo_full_name}/releases/tags/{tag_name}"

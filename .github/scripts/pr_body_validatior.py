@@ -2,8 +2,9 @@ import concurrent.futures
 import json
 import os
 import re
-import requests
 import sys
+
+import requests
 from jira import Jira
 
 BUILD_NOTES_PR_BRANCH_FORMAT = "rc-build-notes-"

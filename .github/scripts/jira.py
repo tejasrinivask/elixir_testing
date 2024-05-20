@@ -1,6 +1,7 @@
 import json
-import requests
 import sys
+
+import requests
 
 # TODO: update payload data with user provided data
 

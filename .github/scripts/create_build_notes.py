@@ -3,12 +3,12 @@
 import json
 import os
 import re
-import requests
 import sys
 from collections import defaultdict
-from ruamel.yaml import YAML
-from jira import Jira
 
+import requests
+from jira import Jira
+from ruamel.yaml import YAML
 
 GH_TOKEN                = os.environ.get('GH_TOKEN', None)
 BUILD_NOTES             = "BuildNotes"

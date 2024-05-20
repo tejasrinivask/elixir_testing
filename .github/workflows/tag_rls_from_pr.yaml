@@ -5,7 +5,6 @@ on:
     types:
       - closed
 
-
 jobs:
   Tag-rls-from-pr:
     runs-on: ubuntu-latest
