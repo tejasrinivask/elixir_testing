@@ -1,34 +1,57 @@
 BuildNotes:
-  Date: 17-05-2024
-  Tag: v1.4.0
+  Date: 20-05-2024
+  Tag: v1.5.0
   Author: elixir_testing
   Changes:
-  - Jira ID: DLP-494
-    Description: description for this feature140
-  - Jira ID: DELTA-157
-    Description: bug140
-  - Jira ID: CRP-1571
-    Description: Common pull request template and github action for pull request validation
-  - Jira ID: CPRE-6067
-    Description: Sinclair CRR (BYOC) - HZTV (HZTV_103) DR box not downloading assets
-      since 01st May
-  - Jira ID: DLP-606
-    Description: 'Failed : Trigger shotbox and loop it (let the shotbox loop play
-      for few iteration) when a break is playing which should trigger next segment
-      after unloop'
-  - Jira ID: DLP-955
-    Description: 'Phase-3: Add github action to block PR merge by validating PR description
-      and title'
-  - Jira ID: DLP-954
-    Description: some bug2340 changes
-  - Jira ID: CRP-1504
-    Description: CP Release 4.7 | DEV 10-MAY 24 | QA 31-MAY 24
-  - Jira ID: NPIE-2865
-    Description: Washington Post - 101_001 - Player Crashed - 2024-03-08
+  - Jira ID: CRP-1648
+    Description: DST Validation
+    Type: feature
+  - Jira ID: CPRE-6146
+    Description: WCIV - Take Next didn't fire
+    Type: feature
+  - Jira ID: DLP-1111
+    Description: Ingest failed to redeploy when the stream url changed from tr07://ingestname
+      to rist://ip:port
+    Type: feature
+  - Jira ID: DLP-1112
+    Description: 'Failed : Create an ingest with 2 srt url and have space in between
+      them'
+    Type: feature
+  - Jira ID: DLP-1105
+    Description: desc13
+    Type: bug
+  - Jira ID: CRP-1572
+    Description: amgctl based NBCU deployments/upgrades
+    Type: feature
+  - Jira ID: PIE-3983
+    Description: Test Automation - Dummy
+    Type: feature
+  - Jira ID: DLP-1103
+    Description: desc for fix
+    Type: bug
+  - Jira ID: DLP-1090
+    Description: description for this feature150
+    Type: feature
   Config Changes:
     New:
     - component: elixir_testing
       files:
+      - file: feat_1.5.0
+        changes:
+        - keyPath: key150
+          description: some description501
+          mandatory: no
+          type: str
+          allowed-value: any value
+          default-value: aaa
+          sample-value: bbb
+        - keyPath: key540
+          description: some description1501
+          mandatory: yes
+          type: int
+          allowed-value: any value1
+          default-value: aaa401
+          sample-value: bbb401
       - file: feat_1.4.0
         changes:
         - keyPath: key140a
@@ -38,21 +61,7 @@ BuildNotes:
           allowed-value: any value
           default-value: aaa
           sample-value: bbb
-        - keyPath: key140
-          description: some description401
-          mandatory: no
-          type: str
-          allowed-value: any value
-          default-value: aaa
-          sample-value: bbb
-        - keyPath: key1140
-          description: some description1401
-          mandatory: yes
-          type: int
-          allowed-value: any value1
-          default-value: aaa401
-          sample-value: bbb401
   Limitations: []
   Dependencies:
-  - dependency140
+  - dependency150
   Deprecated Features: []
