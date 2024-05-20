@@ -23,7 +23,6 @@ jobs:
       - name: Create tag from Pr
         if: github.event.pull_request.merged == true
         run: |
-          BASE_BRANCH=${{ github.base_ref }}
           PR_BODY=$(echo -n "${{ github.event.pull_request.body }}" | tr -d '\r')
           GIT_REPO=${{ github.repository }}
           LATEST_COMMIT=${{ github.event.pull_request.head.sha }}
@@ -37,7 +36,7 @@ jobs:
           echo "source branch -> $SOURCE_BRANCH"
           if [[ $SOURCE_BRANCH == $BUILD_NOTES_PR ]]
           then
-              python ./.github/scripts/tag_pr.py $TARGET_TAG $BASE_BRANCH $GIT_REPO $LATEST_COMMIT
+              python ./.github/scripts/tag_pr.py $TARGET_TAG $GIT_REPO $LATEST_COMMIT
           else
               echo "source branch is not build notes pr"
           fi
