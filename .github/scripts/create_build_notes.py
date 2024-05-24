@@ -6,8 +6,9 @@ import sys
 from collections import defaultdict
 
 import requests
-from jira import Jira
 from ruamel.yaml import YAML
+
+from jira import Jira
 
 GH_TOKEN = os.environ.get("GH_TOKEN", None)
 BUILD_NOTES = "BuildNotes"
@@ -39,9 +40,10 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
         for k, v in yaml_data["jira"].items():
             final_yaml_data[BUILD_NOTES][JIRA_CHANGES].append(
                 {
-                    "Jira ID": k,
-                    "Description": ", ".join(v["Description"]),
-                    "Type": v["Type"],
+                    "JiraID": k,
+                    "description": ", ".join(v["Description"]),
+                    "type": v["Type"],
+                    "pr": v["PR"],
                 }
             )
     if "new" in yaml_data:
@@ -153,7 +155,7 @@ def get_jira_ids_for_multiple_entries(data):
 
 def generate_build_notes(final_dict):
     yaml_data = {}
-    for _, pr_data in final_dict.items():
+    for pr_number, pr_data in final_dict.items():
         if JIRA_CHANGES in pr_data:
             if "jira" not in yaml_data:
                 yaml_data["jira"] = {}
@@ -165,6 +167,7 @@ def generate_build_notes(final_dict):
                             yaml_data["jira"][issue] = {
                                 "Description": [desc],
                                 "Type": e["Type"],
+                                "PR": pr_number,
                             }
                         else:
                             yaml_data["jira"][issue]["Description"].append(desc)
@@ -173,6 +176,7 @@ def generate_build_notes(final_dict):
                         yaml_data["jira"][e["Jira ID"]] = {
                             "Description": [e["Change Description"]],
                             "Type": e["Type"],
+                            "PR": pr_number,
                         }
                     else:
                         yaml_data["jira"][e["Jira ID"]]["Description"].append(
@@ -302,6 +306,10 @@ def get_pr_body(pr_info_list):
 def markdown_tables_to_dicts(markdown_text):
     tables = {}
     current_table = None
+    if not markdown_text or not markdown_text.startswith(
+        "### Changes"
+    ):  # Check if the pull request start with expected md format
+        return tables
     lines = markdown_text.strip().split("\n")
     skip_section = False
     for line in lines:
@@ -428,6 +436,7 @@ def main():
         if line.startswith("* "):
             res = line.rsplit("/", 1)
             pr_list.append(res[1])
+    print(f"pr list -> {pr_list}")
     create_release_files_with_pr_list(pr_list, DATE, CURRENT_TAG, GIT_REPO)
 
 

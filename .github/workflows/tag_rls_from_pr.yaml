@@ -26,19 +26,20 @@ jobs:
           PR_BODY=$(echo -n "${{ github.event.pull_request.body }}" | tr -d '\r')
           GIT_REPO=${{ github.repository }}
           LATEST_COMMIT=${{ github.event.pull_request.head.sha }}
-          TARGET_TAG=$(echo "$PR_BODY" | grep -iE 'TARGET_TAG: ?"?([^"]*)"?$' |  sed -nE 's/TARGET_TAG: ?"?([^"]*)"?$/\1/pI')
-          TARGET_TAG="${TARGET_TAG#"${TARGET_TAG%%[![:space:]]*}"}" #Removing Leading and Trailing spaces
-          TARGET_TAG="${TARGET_TAG%"${TARGET_TAG##*[![:space:]]}"}"
-          echo "TARGET_TAG is $TARGET_TAG"
-          BUILD_NOTES_PR="rc-build-notes-$TARGET_TAG"
+          DATE=$(date -u +"%d-%m-%Y")
+          # since the workflow runs on closing/merging a pr, it needs to extract the tag info from
+          # the merged pr
+          TAG_NAME=$(echo "$PR_BODY" | grep -iE 'TAG_NAME' |  awk -F': ' '{print $2}')
+          TAG_NAME="${TAG_NAME#"${TAG_NAME%%[![:space:]]*}"}" # Removing Leading and Trailing spaces
+          TAG_NAME="${TAG_NAME%"${TAG_NAME##*[![:space:]]}"}"
+          BUILD_NOTES_PR="rc-build-notes-$TAG_NAME"
           SOURCE_BRANCH=${{ github.head_ref }}
-          echo "build notes branch -> $BUILD_NOTES_PR"
-          echo "source branch -> $SOURCE_BRANCH"
           if [[ $SOURCE_BRANCH == $BUILD_NOTES_PR ]]
           then
-              python ./.github/scripts/tag_pr.py $TARGET_TAG $GIT_REPO $LATEST_COMMIT
+              echo "Creating tag $TAG_NAME for branch $SOURCE_BRANCH at $DATE"
+              python ./.github/scripts/tag_pr.py $TAG_NAME $GIT_REPO $LATEST_COMMIT
           else
-              echo "source branch is not build notes pr"
+              echo "source branch is not for build notes pr"
           fi
         env:
           GH_TOKEN: ${{ secrets.GIT_TOKEN }}

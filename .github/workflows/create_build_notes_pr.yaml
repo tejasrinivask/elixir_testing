@@ -1,4 +1,4 @@
-name: Create Release Notes Pr
+name: Create Release Notes' Pr
 
 on:
   workflow_dispatch:
@@ -25,22 +25,22 @@ jobs:
         run: |
           BASE_BRANCH=${{ github.ref_name }}
           GIT_REPO=${{ github.repository }}
-          CURRENT_TAG=${{ github.event.inputs.current_tag }}
-          BUILD_NOTES_PR="rc-build-notes-$CURRENT_TAG"
+          TAG_NAME=${{ github.event.inputs.current_tag }}
+          BUILD_NOTES_PR="rc-build-notes-$TAG_NAME"
           DATE=$(date -u +"%d-%m-%Y")
           # configure git
-          git config --local user.email "tejasrinivas@amagi.com"
-          git config --local user.name "tejasrinivask"
+          git config --local user.email "collaborate@amagi.com"
+          git config --local user.name "amagi-collaborate"
           git switch $BASE_BRANCH
           git switch -c $BUILD_NOTES_PR
           # call script for build notes generation
-          python ./.github/scripts/create_build_notes.py "$GIT_REPO" "$BASE_BRANCH" "$CURRENT_TAG" "$DATE"
+          python ./.github/scripts/create_build_notes.py "$GIT_REPO" "$BASE_BRANCH" "$TAG_NAME" "$DATE"
           # push the changes
           git add build_notes.yaml taglist.yaml
           git commit -m "Auto commit"
           git push --set-upstream origin $BUILD_NOTES_PR
           # create pr
-          gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $CURRENT_TAG" --body "TARGET_TAG: $CURRENT_TAG"
+          gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $TAG_NAME" --body "Skip PR validation\nTARGET_TAG: $TAG_NAME"
         env:
           GH_TOKEN: ${{ secrets.GIT_TOKEN }}
           JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}

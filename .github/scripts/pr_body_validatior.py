@@ -4,11 +4,11 @@ import os
 import re
 import sys
 
-import requests
 from jira import Jira
 
 BUILD_NOTES_PR_BRANCH_FORMAT = "rc-build-notes-"
 REVERT_PR_BRANCH_FORMAT = "revert-"
+
 
 def check_if_jira_exists(password, issue_id):
     jira = Jira(password)
@@ -16,16 +16,15 @@ def check_if_jira_exists(password, issue_id):
     if not response:
         return False
     return True
-    # url = f"https://{domain}/rest/api/3/issue/{issue_id}"
-    # response = requests.get(url, auth=(username, password))
-    # if response.status_code == 404:
-    #     return False
-    # return True
+
 
 def thread_execution_for_jira(password, issue_list):
     return_list = []
     with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-        future_to_item = {executor.submit(check_if_jira_exists, password, item): item for item in issue_list}
+        future_to_item = {
+            executor.submit(check_if_jira_exists, password, item): item
+            for item in issue_list
+        }
         for future in concurrent.futures.as_completed(future_to_item):
             item = future_to_item[future]
             try:
@@ -37,18 +36,19 @@ def thread_execution_for_jira(password, issue_list):
                     return_list.append(item)
                 else:
                     print(f"No jira info for id {item}, exiting ...")
-                    exit(1)
+                    sys.exit(1)
     return return_list
+
 
 def markdown_tables_to_dicts(markdown_text):
     tables = {}
     current_table = None
-    lines = markdown_text.strip().split('\n')
+    lines = markdown_text.strip().split("\n")
     skip_section = False
     for line in lines:
-        if re.match(r'^#+\s+\w+', line):  # Check for headings
+        if re.match(r"^#+\s+\w+", line):  # Check for headings
             current_table = None
-            table_name = line.strip('#').strip()
+            table_name = line.strip("#").strip()
             if table_name == "Additional Info":
                 skip_section = True
                 continue
@@ -58,25 +58,35 @@ def markdown_tables_to_dicts(markdown_text):
                 tables[table_name] = {}
                 # skip_rows_count variable shows the rows count that needs to be skipped.
                 # creating new table needs setting up header row, hence the row (separator row) after that will be skipped.
-                tables[table_name]['skip_rows_count'] = 1
+                tables[table_name]["skip_rows_count"] = 1
             else:
                 # if the table already exists, then header and separator rows needs to be skipped.
-                tables[table_name]['skip_rows_count'] = 2
+                tables[table_name]["skip_rows_count"] = 2
             current_table = tables[table_name]
-        elif re.match(r'^\s*\|.*\|\s*$', line):  # Check for table rows
+        elif re.match(r"^\s*\|.*\|\s*$", line):  # Check for table rows
             if not skip_section:
                 if current_table is not None:
-                    if 'headers' not in current_table:
-                        current_table['headers'] = [header.strip() for header in line.strip('|').split('|') if header.strip()]
-                        current_table['data'] = []
+                    if "headers" not in current_table:
+                        current_table["headers"] = [
+                            header.strip()
+                            for header in line.strip("|").split("|")
+                            if header.strip()
+                        ]
+                        current_table["data"] = []
                     else:
                         # skip_rows_count values as '0' indicates that the current row is data row
-                        if current_table['skip_rows_count'] == 0:
-                            row_data = [data.strip() for data in line.strip('|').split('|')]
-                            if current_table['data'] or any(cell.strip() for cell in row_data):
-                                current_table['data'].append(dict(zip(current_table['headers'], row_data)))
+                        if current_table["skip_rows_count"] == 0:
+                            row_data = [
+                                data.strip() for data in line.strip("|").split("|")
+                            ]
+                            if current_table["data"] or any(
+                                cell.strip() for cell in row_data
+                            ):
+                                current_table["data"].append(
+                                    dict(zip(current_table["headers"], row_data))
+                                )
                         else:
-                            current_table['skip_rows_count'] -= 1
+                            current_table["skip_rows_count"] -= 1
     # Not required, skip_rows_count will take care of removing separator row
     # Remove the first data entry (separator row) from each table
     # for table in tables.values():
@@ -84,7 +94,10 @@ def markdown_tables_to_dicts(markdown_text):
     #         del table['data'][0]
     return tables
 
-def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch):
+
+def execute_action_based_on_branch(
+    prefix_branches, suffix_branches, contain_branches, base_branch, head_branch
+):
     """
     Skips the github action in the following scenarios:
     - if the head_branch is from revert pr
@@ -103,9 +116,11 @@ def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_bra
     first return type gives the result if the action should be skipped or not if the prefix is '+'. If the prefix is '-' caller should reverse it and use
     second return param indicates if the skip is because of head ref. It will be true only if the pr is revert pr or build notes gen pr
     """
-    if head_branch.startswith(REVERT_PR_BRANCH_FORMAT):    # skip check for build notes pr
+    if head_branch.startswith(REVERT_PR_BRANCH_FORMAT):  # skip check for build notes pr
         return False, True
-    if head_branch.startswith(BUILD_NOTES_PR_BRANCH_FORMAT):    # skip check for build notes pr
+    if head_branch.startswith(
+        BUILD_NOTES_PR_BRANCH_FORMAT
+    ):  # skip check for build notes pr
         return False, True
     for pre in prefix_branches:
         if base_branch.startswith(pre):
@@ -120,6 +135,7 @@ def execute_action_based_on_branch(prefix_branches, suffix_branches, contain_bra
             print(f"Matches with pattern -> {pattern}")
             return True, False
     return False, False
+
 
 def validate_branches():
     """
@@ -144,91 +160,125 @@ def validate_branches():
     branches = sys.argv[1:]
     if not branches:
         print("No branches provided, skipping checks...")
-        exit(0)
+        sys.exit(0)
     is_it_plus = False
-    symbol = ''
+    symbol = ""
     if branches[0].startswith("+"):
-        symbol = '+'
+        symbol = "+"
         is_it_plus = True
     elif branches[0].startswith("-"):
-        symbol = '-'
+        symbol = "-"
         is_it_plus = False
     else:
         print(f"Unknown branch format -> {branches[0]}")
         sys.exit(1)
     for branch in branches:
         if not branch.startswith(symbol):
-            print(f"All the branches should be starting with the same prefix: {symbol}, error -> {branch}")
-            exit(1)
-        each_branch = branch[1:]    # ignore + in the beginning
-        if each_branch[0] == '*' and each_branch[-1] == '*':  # format -> +*(branch)*
-            contain_branches.append(each_branch[each_branch.find('(')+1:each_branch.find(')')])
-        elif each_branch[0] == '*':     # format -> +*(branch)
-            prefix_branches.append(each_branch[each_branch.find('(')+1:each_branch.find(')')])
-        elif each_branch[-1] == '*':    # format -> +(branch)*
-            suffix_branches.append(each_branch[each_branch.find('(')+1:each_branch.find(')')])
+            print(
+                f"All the branches should be starting with the same prefix: {symbol}, error -> {branch}"
+            )
+            sys.exit(1)
+        each_branch = branch[1:]  # ignore + in the beginning
+        if each_branch[0] == "*" and each_branch[-1] == "*":  # format -> +*(branch)*
+            contain_branches.append(
+                each_branch[each_branch.find("(") + 1 : each_branch.find(")")]
+            )
+        elif each_branch[0] == "*":  # format -> +*(branch)
+            suffix_branches.append(
+                each_branch[each_branch.find("(") + 1 : each_branch.find(")")]
+            )
+        elif each_branch[-1] == "*":  # format -> +(branch)*
+            prefix_branches.append(
+                each_branch[each_branch.find("(") + 1 : each_branch.find(")")]
+            )
         else:
             print(f"Unknown branch format -> {branch}")
-            exit(1)
+            sys.exit(1)
     return prefix_branches, suffix_branches, contain_branches, is_it_plus
+
+
+def skip_after_validating_description(body: str) -> bool:
+    if "Skip PR validation" in body:
+        return True
+    return False
+
 
 def main():
     # get the branches lists for validation
     prefix_branches, suffix_branches, contain_branches, is_it_plus = validate_branches()
     # load pull request event payload
-    event_path = os.getenv('GITHUB_EVENT_PATH')
-    with open(event_path, 'r') as f:
+    event_path = os.getenv("GITHUB_EVENT_PATH")
+    # event_path validation
+    if (
+        not event_path
+        or not os.path.exists(event_path)
+        or not os.path.isfile(event_path)
+    ):
+        print(f"Failed getting event details from path: {event_path}")
+        sys.exit(1)
+    with open(event_path, mode="r", encoding="utf-8") as f:
         try:
             event_payload = json.load(f)
         except Exception as e:
             print("Error loading event payload, {e}")
-            exit(1)
-    if not event_payload or 'pull_request' not in event_payload or not event_payload['pull_request']:
+            sys.exit(1)
+    if (
+        not event_payload
+        or "pull_request" not in event_payload
+        or not event_payload["pull_request"]
+    ):
         print(f"Invalid event payload : {event_payload}")
-        exit(1)
-    base_branch = event_payload['pull_request']['base']['ref']
-    head_branch = event_payload['pull_request']['head']['ref']
-    result, is_it_because_of_head_ref = execute_action_based_on_branch(prefix_branches, suffix_branches, contain_branches, base_branch, head_branch)
+        sys.exit(1)
+    base_branch = event_payload["pull_request"]["base"]["ref"]
+    head_branch = event_payload["pull_request"]["head"]["ref"]
+    result, is_it_because_of_head_ref = execute_action_based_on_branch(
+        prefix_branches, suffix_branches, contain_branches, base_branch, head_branch
+    )
     if not result:
         if is_it_because_of_head_ref:
             print("Skipping check as it is either build notes pr or revert pr")
-            exit(0)
+            sys.exit(0)
         if is_it_plus:
-            print(f"{base_branch} did not match with any patterns and the prefix is '+'. Skipping check...")
-            exit(0)
+            print(
+                f"{base_branch} did not match with any patterns and the prefix is '+'. Skipping check..."
+            )
+            sys.exit(0)
     if result and not is_it_plus:
-        print(f"{base_branch} matches with a pattern and the prefix is '-'. Skipping check...")
-        exit(0)
-    markdown_text = event_payload['pull_request']['body']
+        print(
+            f"{base_branch} matches with a pattern and the prefix is '-'. Skipping check..."
+        )
+        sys.exit(0)
+    markdown_text = event_payload["pull_request"]["body"]
+    if skip_after_validating_description(markdown_text):
+        print("Skipping PR validation")
+        sys.exit(0)
     # Convert Markdown tables to dictionaries
     result = markdown_tables_to_dicts(markdown_text)
     # Store Jira id's in jira_list by parsing result
-    jira_list = []
+    jira_list = set()
     try:
         for each_entry in result["Changes"]["data"]:
             if each_entry["Jira ID"] != "":
                 if "," in each_entry["Jira ID"]:
                     for item in each_entry["Jira ID"].split(","):
-                        jira_list.append(item.strip())
+                        jira_list.add(item.strip())
                 else:
-                    jira_list.append(each_entry["Jira ID"])
+                    jira_list.add(each_entry["Jira ID"])
     except Exception as err:
         print(f"Error while getting Jira ID's -> {err}")
     print(", ".join(jira_list))
     # Make Jira api call to validate if jira id actually exists
-    jira_uname = os.environ.get("JIRA_USERNAME", "")
     jira_password = os.environ.get("JIRA_PASSWORD", "")
-    jira_domain = os.environ.get("JIRA_DOMAIN", "")
-    if not jira_uname or not jira_password or not jira_domain:
+    if not jira_password:
         print("Skipping jira check as jira credentials are not")
-        exit(0)
+        sys.exit(0)
     final_list = thread_execution_for_jira(jira_password, jira_list)
     if not final_list:
         print(f"No valid jira id's, exiting ...")
-        exit(1)
+        sys.exit(1)
     print(f"Valid jira_list -> {final_list}")
-    exit(0)
+    sys.exit(0)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

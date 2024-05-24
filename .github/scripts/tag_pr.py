@@ -46,13 +46,13 @@ def update_release(repo_full_name, release_id, new_body, access_token):
 def get_release_body_from_build_notes():
     yaml = YAML()
     body = "### Jira Changes\n"
-    body += "| Jira ID | Type | Description |\n"
-    body += "| --- | --- | --- |\n"
+    body += "| Jira ID | PR | Type | Description |\n"
+    body += "| --- | --- | --- | --- |\n"
     try:
         with open("build_notes.yaml", mode="r", encoding="utf-8") as fh:
             data = yaml.load(fh)
         for each_entry in data["BuildNotes"]["Changes"]:
-            body += f"| https://amagiengg.atlassian.net/browse/{each_entry['Jira ID']} | {each_entry['Type']} | {each_entry['Description']} |\n"
+            body += f"| https://amagiengg.atlassian.net/browse/{each_entry['JiraID']} | {each_entry['pr']} | {each_entry['type']} | {each_entry['description']} |\n"
     except Exception as e:
         print(f"Error loading build_notes, err: {e}")
         return ""
