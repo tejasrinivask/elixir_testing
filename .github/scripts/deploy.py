@@ -14,7 +14,7 @@ def main():
     """
     branch_pattern = sys.argv[1]
     with open(
-        "target_repo/.github/scripts/build_notes_configs.json",
+        ".github/scripts/build_notes_configs.json",
         mode="r",
         encoding="utf-8",
     ) as fh:
