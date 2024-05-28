@@ -36,9 +36,12 @@ jobs:
           cp -r pr_and_build_notes/* target_repo/.github/
           python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           pushd target_repo
+          git config user.email "tejasrinivas@amagi.com"
+          git config user.name "tejasrinivask"
           git switch -c build-notes-deploy
           git add .github/*
           git commit -m "add build notes workflow files"
+          git config user.name && git config user.email
           git push --set-upstream origin build-notes-deploy
           gh pr create -B $BASE_BRANCH -H build-notes-deploy --title "Add Build Notes workflow" --body "Add build notes workflow files"
           popd
