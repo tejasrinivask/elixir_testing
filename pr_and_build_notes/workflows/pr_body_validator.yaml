@@ -1,0 +1,19 @@
+name: Validate PR
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  BlockPR:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Validate PR
+        run: python .github/scripts/pr_body_validatior.py '+(teja-test-)*'
+        env:
+          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}

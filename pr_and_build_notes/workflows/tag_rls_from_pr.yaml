@@ -1,0 +1,51 @@
+name: Tag release from PR
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  Tag-rls-from-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Install Dependencies
+        run: |
+          pip install PyGithub
+          pip install ruamel.yaml
+
+      - name: Create tag from Pr
+        if: github.event.pull_request.merged == true
+        run: |
+          PR_BODY=$(echo -n "${{ github.event.pull_request.body }}" | tr -d '\r')
+          GIT_REPO=${{ github.repository }}
+          LATEST_COMMIT=${{ github.event.pull_request.head.sha }}
+          DATE=$(date -u +"%d-%m-%Y")
+          # since the workflow runs on closing/merging a pr, it needs to extract the tag info from
+          # the merged pr
+          TAG_NAME=$(echo "$PR_BODY" | grep -iE 'TAG_NAME' |  awk -F': ' '{print $2}')
+          TAG_NAME="${TAG_NAME#"${TAG_NAME%%[![:space:]]*}"}" # Removing Leading and Trailing spaces
+          TAG_NAME="${TAG_NAME%"${TAG_NAME##*[![:space:]]}"}"
+          BUILD_NOTES_PR="rc-build-notes-$TAG_NAME"
+          SOURCE_BRANCH=${{ github.head_ref }}
+          if [[ $SOURCE_BRANCH == $BUILD_NOTES_PR ]]
+          then
+              echo "Creating tag $TAG_NAME for branch $SOURCE_BRANCH at $DATE"
+              python .github/scripts/tag_pr.py $TAG_NAME $GIT_REPO $LATEST_COMMIT
+          else
+              echo "source branch is not for build notes pr"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+
+      - name: Update in jira
+        run: |
+          python .github/scripts/update_jira_with_payload.py
+        env:
+          JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}
