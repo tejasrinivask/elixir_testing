@@ -47,4 +47,4 @@ jobs:
           git push --set-upstream origin build-notes-deploy
           gh pr create -B $BASE_BRANCH -H build-notes-deploy --title "Add Build Notes workflow" --body "Add build notes workflow files"
         env:
-          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GIT_COLLAB_TOKEN }}

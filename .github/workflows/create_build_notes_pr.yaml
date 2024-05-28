@@ -42,5 +42,5 @@ jobs:
           # create pr
           gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $TAG_NAME" --body "Skip PR validation<br>TAG_NAME: $TAG_NAME"
         env:
-          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GIT_COLLAB_TOKEN }}
           JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}

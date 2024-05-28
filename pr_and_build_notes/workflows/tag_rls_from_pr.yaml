@@ -42,7 +42,7 @@ jobs:
               echo "source branch is not for build notes pr"
           fi
         env:
-          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GIT_COLLAB_TOKEN }}
 
       - name: Update in jira
         run: |
