@@ -7,7 +7,7 @@ on:
         description: "Repository name of format amagimedia/cp-build-automation"
         required: true
       branch_pattern:
-        description: ""
+        description: "Valid branch patterns for pull request validation"
         required: true
 
 jobs:
@@ -27,7 +27,6 @@ jobs:
       - name: Get details from workflow
         run: |
           TARGET_REPO=${{ github.event.inputs.repo }}
-          BRANCH_PATTERN=${{ github.event.inputs.branch_pattern }}
           git config --local user.email "tejasrinivas@amagi.com"
           git config --local user.name "tejasrinivask"
           mkdir target_repo
@@ -36,7 +35,7 @@ jobs:
           git switch -c build-notes-deploy
           mkdir -p target_repo/.github
           cp -r pr_and_build_notes/* target_repo/.github/
-          python .github/scripts/deploy.py BRANCH_PATTERN
+          python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           pushd target_repo
           git add .github/*
           git commit -m "add build notes workflow files"
