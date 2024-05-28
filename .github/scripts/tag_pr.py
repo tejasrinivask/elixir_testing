@@ -52,7 +52,9 @@ def get_release_body_from_build_notes():
         with open("build_notes.yaml", mode="r", encoding="utf-8") as fh:
             data = yaml.load(fh)
         for each_entry in data["BuildNotes"]["Changes"]:
-            body += f"| https://amagiengg.atlassian.net/browse/{each_entry['JiraID']} | {each_entry['pr']} | {each_entry['type']} | {each_entry['description']} |\n"
+            pr_list = [f"#{x.strip()}" for x in each_entry["pr"].split(",")]
+            final_pr_str = ", ".join(pr_list)
+            body += f"| https://amagiengg.atlassian.net/browse/{each_entry['JiraID']} | {final_pr_str} | {each_entry['type']} | {each_entry['description']} |\n"
     except Exception as e:
         print(f"Error loading build_notes, err: {e}")
         return ""

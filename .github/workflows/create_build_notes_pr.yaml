@@ -40,7 +40,7 @@ jobs:
           git commit -m "Auto commit"
           git push --set-upstream origin $BUILD_NOTES_PR
           # create pr
-          gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $TAG_NAME" --body "Skip PR validation\nTARGET_TAG: $TAG_NAME"
+          gh pr create -B $BASE_BRANCH -H $BUILD_NOTES_PR --title "Pr for Build Notes of $TAG_NAME" --body "Skip PR validation<br>TAG_NAME: $TAG_NAME"
         env:
           GH_TOKEN: ${{ secrets.GIT_TOKEN }}
           JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}

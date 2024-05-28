@@ -6,9 +6,8 @@ import sys
 from collections import defaultdict
 
 import requests
-from ruamel.yaml import YAML
-
 from jira import Jira
+from ruamel.yaml import YAML
 
 GH_TOKEN = os.environ.get("GH_TOKEN", None)
 BUILD_NOTES = "BuildNotes"
@@ -41,9 +40,12 @@ def cleanup_generated_yaml_data(yaml_data, date, tag, author):
             final_yaml_data[BUILD_NOTES][JIRA_CHANGES].append(
                 {
                     "JiraID": k,
-                    "description": ", ".join(v["Description"]),
+                    "pr": ", ".join(v["PR"]),
                     "type": v["Type"],
-                    "pr": v["PR"],
+                    "component": ", ".join(v["Component"]),
+                    "description": ", ".join(v["Description"]),
+                    "stepstoreproduce": ", ".join(v["StepsToReproduce"]),
+                    "impacts": ", ".join(v["Impact"]),
                 }
             )
     if "new" in yaml_data:
@@ -165,22 +167,50 @@ def generate_build_notes(final_dict):
                     for issue, desc in d.items():
                         if issue not in yaml_data["jira"]:
                             yaml_data["jira"][issue] = {
-                                "Description": [desc],
+                                "PR": [str(pr_number)],
                                 "Type": e["Type"],
-                                "PR": pr_number,
+                                "Component": [e["Component name"]],
+                                "Description": [desc],
+                                "StepsToReproduce": [
+                                    e["Steps to reproduce & validate"]
+                                ],
+                                "Impact": [e["Impact on other features/components"]],
                             }
                         else:
+                            yaml_data["jira"][issue]["PR"].append(str(pr_number))
+                            yaml_data["jira"][issue]["Component"].append(
+                                e["Component name"]
+                            )
                             yaml_data["jira"][issue]["Description"].append(desc)
+                            yaml_data["jira"][issue]["StepsToReproduce"].append(
+                                e["Steps to reproduce & validate"]
+                            )
+                            yaml_data["jira"][issue]["Impact"].append(
+                                e["Impact on other features/components"]
+                            )
                 else:
                     if e["Jira ID"] not in yaml_data["jira"]:
                         yaml_data["jira"][e["Jira ID"]] = {
-                            "Description": [e["Change Description"]],
+                            "PR": [str(pr_number)],
                             "Type": e["Type"],
-                            "PR": pr_number,
+                            "Component": [e["Component name"]],
+                            "Description": [e["Change Description"]],
+                            "StepsToReproduce": [e["Steps to reproduce & validate"]],
+                            "Impact": [e["Impact on other features/components"]],
                         }
                     else:
+                        yaml_data["jira"][e["Jira ID"]]["PR"].append(str(pr_number))
+                        yaml_data["jira"][e["Jira ID"]]["Component"].append(
+                            e["Component name"]
+                        )
                         yaml_data["jira"][e["Jira ID"]]["Description"].append(
                             e["Change Description"]
+                        )
+                        yaml_data["jira"][e["Jira ID"]]["StepsToReproduce"].append(
+                            e["Steps to reproduce & validate"]
+                        )
+                        yaml_data["jira"][e["Jira ID"]]["Impact"].append(
+                            e["Impact on other features/components"]
                         )
         if "New Configs" in pr_data and pr_data["New Configs"]["data"]:
             if "new" not in yaml_data:
