@@ -35,9 +35,6 @@ jobs:
           # gh repo clone $URL target_repo
           git clone https://x-access-token:${GH_TOKEN}@github.com/${TARGET_REPO}.git target_repo
 
-          mkdir -p target_repo/.github
-          cp -r pr_and_build_notes/* target_repo/.github/
-
           cd target_repo
           BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
           existed_in_remote=$(git ls-remote --heads origin build-notes-deploy)
@@ -47,6 +44,8 @@ jobs:
             git switch build-notes-deploy
             git pull
           fi
+          mkdir -p target_repo/.github
+          cp -r ../pr_and_build_notes/* .github/
           python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           git add .github/*
           git commit -m "add build notes workflow files"
