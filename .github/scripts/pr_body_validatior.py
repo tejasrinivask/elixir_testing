@@ -131,7 +131,7 @@ def execute_action_based_on_branch(
             print(f"Matches with suffix -> {suf}")
             return True, False
     for pattern in contain_branches:
-        if base_branch.contains(pattern):
+        if pattern in base_branch:
             print(f"Matches with pattern -> {pattern}")
             return True, False
     return False, False
