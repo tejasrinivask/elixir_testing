@@ -27,8 +27,8 @@ jobs:
       - name: Get details from workflow
         run: |
           TARGET_REPO=${{ github.event.inputs.repo }}
-          git config --local user.email "tejasrinivas@amagi.com"
-          git config --local user.name "tejasrinivask"
+          git config --global user.email "tejasrinivas@amagi.com"
+          git config --global user.name "tejasrinivask"
           mkdir target_repo
           git clone https://github.com/$TARGET_REPO.git target_repo
           BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
@@ -37,8 +37,6 @@ jobs:
           python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           pushd target_repo
           git switch -c build-notes-deploy
-          git config --local user.email "tejasrinivas@amagi.com"
-          git config --local user.name "tejasrinivask"
           git add .github/*
           git commit -m "add build notes workflow files"
           git push --set-upstream origin build-notes-deploy
