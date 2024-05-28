@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           ref: ${{ github.ref_name }}
 
@@ -33,13 +33,12 @@ jobs:
           git config --global user.name "tejasrinivask"
           mkdir target_repo
           gh repo clone $URL target_repo
-          BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
           mkdir -p target_repo/.github
           cp -r pr_and_build_notes/* target_repo/.github/
           python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
-          pushd target_repo
-          git config user.email "tejasrinivas@amagi.com"
-          git config user.name "tejasrinivask"
+          cat target_repo/.github/workflows/pr_body_validator.yaml
+          cd target_repo
+          BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
           git switch -c build-notes-deploy
           git add .github/*
           git commit -m "add build notes workflow files"
@@ -47,6 +46,5 @@ jobs:
           git branch
           git push --set-upstream origin build-notes-deploy
           gh pr create -B $BASE_BRANCH -H build-notes-deploy --title "Add Build Notes workflow" --body "Add build notes workflow files"
-          popd
         env:
           GH_TOKEN: ${{ secrets.GIT_TOKEN }}
