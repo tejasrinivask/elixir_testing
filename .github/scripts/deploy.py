@@ -30,6 +30,8 @@ def main():
     ) as fh:
         data = json.load(fh)
     data["branch_pattern"] = branch_pattern
+    with open(tgt_path, mode="w", encoding="utf-8") as fh:
+        json.dump(data, fh)
     # yaml = YAML()
     # with open(
     #     "target_repo/.github/workflows/pr_body_validator.yaml",
