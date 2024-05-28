@@ -46,6 +46,7 @@ jobs:
             git switch -c build-notes-deploy
           else
             git switch build-notes-deploy
+            git pull
           fi
           git add .github/*
           git commit -m "add build notes workflow files"
