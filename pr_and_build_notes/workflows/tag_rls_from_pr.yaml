@@ -38,14 +38,10 @@ jobs:
           then
               echo "Creating tag $TAG_NAME for branch $SOURCE_BRANCH at $DATE"
               python .github/scripts/tag_pr.py $TAG_NAME $GIT_REPO $LATEST_COMMIT
+              python .github/scripts/update_jira_with_payload.py
           else
               echo "source branch is not for build notes pr"
           fi
         env:
           GH_TOKEN: ${{ secrets.GIT_COLLAB_TOKEN }}
-
-      - name: Update in jira
-        run: |
-          python .github/scripts/update_jira_with_payload.py
-        env:
           JIRA_PASSWORD: ${{ secrets.JIRA_PASSWORD }}
