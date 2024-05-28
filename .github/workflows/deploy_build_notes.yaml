@@ -32,7 +32,7 @@ jobs:
           git config --global user.email "tejasrinivas@amagi.com"
           git config --global user.name "tejasrinivask"
           mkdir target_repo
-          git clone $URL target_repo
+          gh repo clone $URL target_repo
           BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
           mkdir -p target_repo/.github
           cp -r pr_and_build_notes/* target_repo/.github/
