@@ -27,10 +27,12 @@ jobs:
       - name: Get details from workflow
         run: |
           TARGET_REPO=${{ github.event.inputs.repo }}
+          URL=https://github.com/$TARGET_REPO.git
+          echo $URL
           git config --global user.email "tejasrinivas@amagi.com"
           git config --global user.name "tejasrinivask"
           mkdir target_repo
-          git clone https://github.com/$TARGET_REPO.git target_repo
+          git clone $URL target_repo
           BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
           mkdir -p target_repo/.github
           cp -r pr_and_build_notes/* target_repo/.github/
@@ -42,6 +44,7 @@ jobs:
           git add .github/*
           git commit -m "add build notes workflow files"
           git config user.name && git config user.email
+          git branch
           git push --set-upstream origin build-notes-deploy
           gh pr create -B $BASE_BRANCH -H build-notes-deploy --title "Add Build Notes workflow" --body "Add build notes workflow files"
           popd
