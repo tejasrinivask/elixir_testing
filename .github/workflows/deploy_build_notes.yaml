@@ -37,6 +37,8 @@ jobs:
           cp -r pr_and_build_notes/* target_repo/.github/
           python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           pushd target_repo
+          git config --local user.email "tejasrinivas@amagi.com"
+          git config --local user.name "tejasrinivask"
           git add .github/*
           git commit -m "add build notes workflow files"
           git push --set-upstream origin build-notes-deploy
