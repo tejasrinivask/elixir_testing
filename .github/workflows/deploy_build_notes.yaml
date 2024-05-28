@@ -41,7 +41,12 @@ jobs:
 
           cd target_repo
           BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
-          git switch -c build-notes-deploy
+          existed_in_remote=$(git ls-remote --heads origin build-notes-deploy)
+          if [[ -z ${existed_in_remote} ]]; then
+            git switch -c build-notes-deploy
+          else
+            git switch build-notes-deploy
+          fi
           git add .github/*
           git commit -m "add build notes workflow files"
           git push --set-upstream origin build-notes-deploy
