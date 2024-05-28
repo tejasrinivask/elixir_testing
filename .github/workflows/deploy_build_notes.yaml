@@ -46,7 +46,7 @@ jobs:
           fi
           mkdir -p target_repo/.github
           cp -r ../pr_and_build_notes/* .github/
-          python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
+          python ../.github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           git add .github/*
           git commit -m "add build notes workflow files"
           git push --set-upstream origin build-notes-deploy
