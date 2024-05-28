@@ -1,0 +1,47 @@
+name: Deploy build notes workflow
+
+on:
+  workflow_dispatch:
+    inputs:
+      repo:
+        description: "Repository name of format amagimedia/cp-build-automation"
+        required: true
+      branch_pattern:
+        description: ""
+        required: true
+
+jobs:
+  build-note-generator:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Install dependencies
+        run: pip install ruamel.yaml
+
+      - name: Get details from workflow
+        run: |
+          TARGET_REPO=${{ github.event.inputs.repo }}
+          BRANCH_PATTERN=${{ github.event.inputs.branch_pattern }}
+          git config --local user.email "tejasrinivas@amagi.com"
+          git config --local user.name "tejasrinivask"
+          mkdir target_repo
+          git clone https://github.com/$TARGET_REPO.git target_repo
+          BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
+          git switch -c build-notes-deploy
+          mkdir -p target_repo/.github
+          cp -r pr_and_build_notes/* target_repo/.github/
+          python .github/scripts/deploy.py BRANCH_PATTERN
+          pushd target_repo
+          git add .github/*
+          git commit -m "add build notes workflow files"
+          git push --set-upstream origin build-notes-deploy
+          gh pr create -B $BASE_BRANCH -H build-notes-deploy --title "Add Build Notes workflow" --body "Add build notes workflow files"
+          popd
+        env:
+          GH_TOKEN: ${{ secrets.GIT_TOKEN }}
