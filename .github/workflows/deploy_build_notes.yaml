@@ -32,11 +32,11 @@ jobs:
           mkdir target_repo
           git clone https://github.com/$TARGET_REPO.git target_repo
           BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
-          git switch -c build-notes-deploy
           mkdir -p target_repo/.github
           cp -r pr_and_build_notes/* target_repo/.github/
           python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           pushd target_repo
+          git switch -c build-notes-deploy
           git config --local user.email "tejasrinivas@amagi.com"
           git config --local user.name "tejasrinivask"
           git add .github/*
