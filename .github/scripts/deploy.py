@@ -16,10 +16,11 @@ def main():
     branch_pattern = sys.argv[1]
     curr_path = os.path.abspath(__file__)
     dir_path = os.path.dirname(curr_path)
+    root_path = os.path.dirname(os.path.dirname(dir_path))
     print(curr_path)
     print(dir_path)
     tgt_path = os.path.join(
-        dir_path, "target_repo", ".github", "scripts", "build_notes_configs.json"
+        root_path, "target_repo", ".github", "scripts", "build_notes_configs.json"
     )
     print(tgt_path)
     with open(
