@@ -157,7 +157,11 @@ def validate_branches():
     is_it_plus -> bool, will be True if the prefix '+', else False for '-'
     """
     prefix_branches, suffix_branches, contain_branches = [], [], []
-    branches = sys.argv[1:]
+    with open(
+        ".github/scripts/build_notes_configs.json", mode="r", encoding="utf-8"
+    ) as fh:
+        data = json.load(fh)
+    branches = [x.strip() for x in data["branch_pattern"].split()]
     if not branches:
         print("No branches provided, skipping checks...")
         sys.exit(0)
