@@ -4,6 +4,7 @@ Update branch pattern for pull request validator workflow
 """
 import sys
 import json
+import os
 
 from ruamel.yaml import YAML
 
@@ -13,8 +14,16 @@ def main():
     update branch pattern for pr_body_validator workflow file
     """
     branch_pattern = sys.argv[1]
+    curr_path = os.path.abspath(__file__)
+    dir_path = os.path.dirname(curr_path)
+    print(curr_path)
+    print(dir_path)
+    tgt_path = os.path.join(
+        dir_path, "target_repo", ".github", "scripts", "build_notes_configs.json"
+    )
+    print(tgt_path)
     with open(
-        "target_repo/.github/scripts/build_notes_configs.json",
+        tgt_path,
         mode="r",
         encoding="utf-8",
     ) as fh:
