@@ -1,55 +1,32 @@
 BuildNotes:
-  Date: 20-05-2024
-  Tag: v1.6.0
+  Date: 28-05-2024
+  Tag: fr-test-v1
   Author: elixir_testing
   Changes:
-  - Jira ID: DLP-1117
-    Description: fixed bug
-    Type: bug
-  - Jira ID: CRP-1571
-    Description: Common pull request template and github action for pull request validation
-    Type: feature
-  - Jira ID: CPRE-6139
-    Description: CP-Integration Version Downgraded Issue
-    Type: feature
-  - Jira ID: DLP-946
-    Description: Cloudport codebuild should send mail/slack if build succeeds/fails
-    Type: feature
-  - Jira ID: DLP-954
-    Description: 'Phase-2: Update Jira description/custom_field from pr using jira
-      api'
-    Type: feature
-  - Jira ID: DLP-955
-    Description: desc13
-    Type: bug
-  - Jira ID: CRP-1567
-    Description: 'NBCU-798: Engage CP player as transcoder in Live2VoD in order to
-      support PCM audio support in MPEG2TS along with AVC GDR stream'
-    Type: feature
-  - Jira ID: PIE-4009
-    Description: Qwest Migration setup Graphics Issue
-    Type: feature
+  - JiraID: DLP-1196
+    pr: '100'
+    type: feature
+    component: elixir_testing
+    description: testing build notes gen
+    stepstoreproduce: 1. step<br>2. step 2
+    impacts: impact on component1
+  - JiraID: DLP-1195
+    pr: '101'
+    type: bug
+    component: elixir_testing
+    description: fix bug1
+    stepstoreproduce: step x
+    impacts: fix component x
   Config Changes:
     New:
     - component: elixir_testing
       files:
-      - file: feat_1.6.0
+      - file: feat1.json
         changes:
-        - keyPath: key160
-          description: some description601
-          mandatory: no
-          type: str
-          allowed-value: any value
-          default-value: aaa
-          sample-value: bbb
-        - keyPath: key640
-          description: some description1601
+        - keyPath: key.feat1
+          description: added new key
           mandatory: yes
-          type: int
-          allowed-value: any value1
-          default-value: aaa401
-          sample-value: bbb401
-  Limitations: []
-  Dependencies:
-  - dependency150
-  Deprecated Features: []
+          type: str
+          allowed-value: any str
+          default-value: val
+          sample-value: val
