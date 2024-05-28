@@ -37,7 +37,6 @@ jobs:
 
           mkdir -p target_repo/.github
           cp -r pr_and_build_notes/* target_repo/.github/
-          python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
 
           cd target_repo
           BASE_BRANCH=$(git symbolic-ref --short -q HEAD)
@@ -48,6 +47,7 @@ jobs:
             git switch build-notes-deploy
             git pull
           fi
+          python .github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           git add .github/*
           git commit -m "add build notes workflow files"
           git push --set-upstream origin build-notes-deploy
