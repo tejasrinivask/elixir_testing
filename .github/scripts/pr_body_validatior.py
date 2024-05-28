@@ -161,7 +161,7 @@ def validate_branches():
         ".github/scripts/build_notes_configs.json", mode="r", encoding="utf-8"
     ) as fh:
         data = json.load(fh)
-    branches = [x.strip() for x in data["branch_pattern"].split(",")]
+    branches = [x.strip() for x in data["branch_pattern"].split()]
     if not branches:
         print("No branches provided, skipping checks...")
         sys.exit(0)
