@@ -17,12 +17,9 @@ def main():
     curr_path = os.path.abspath(__file__)
     dir_path = os.path.dirname(curr_path)
     root_path = os.path.dirname(os.path.dirname(dir_path))
-    print(curr_path)
-    print(dir_path)
     tgt_path = os.path.join(
         root_path, "target_repo", ".github", "scripts", "build_notes_configs.json"
     )
-    print(tgt_path)
     with open(
         tgt_path,
         mode="r",
@@ -32,23 +29,6 @@ def main():
     data["branch_pattern"] = branch_pattern
     with open(tgt_path, mode="w", encoding="utf-8") as fh:
         json.dump(data, fh)
-    # yaml = YAML()
-    # with open(
-    #     "target_repo/.github/workflows/pr_body_validator.yaml",
-    #     mode="r",
-    #     encoding="utf-8",
-    # ) as fh:
-    #     data = yaml.load(fh)
-    # cmd = [i.strip() for i in data["jobs"]["BlockPR"]["steps"][1]["run"].split()[:3]]
-    # for pat in branch_pattern.split():
-    #     cmd.append(f"{pat}")
-    # data["jobs"]["BlockPR"]["steps"][1]["run"] = " ".join(cmd)
-    # with open(
-    #     "target_repo/.github/workflows/pr_body_validator.yaml",
-    #     mode="w",
-    #     encoding="utf-8",
-    # ) as fh:
-    #     yaml.dump(data, fh)
 
 
 if __name__ == "__main__":

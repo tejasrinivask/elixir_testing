@@ -44,7 +44,7 @@ jobs:
             git switch build-notes-deploy
             git pull
           fi
-          mkdir -p target_repo/.github
+          mkdir -p .github
           cp -r ../pr_and_build_notes/* .github/
           python ../.github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
           git add .github/*
