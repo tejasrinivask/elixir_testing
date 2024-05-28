@@ -21,7 +21,7 @@ def main():
         data = yaml.load(fh)
     cmd = [i.strip() for i in data["jobs"]["BlockPR"]["steps"][1]["run"].split()[:-1]]
     for pat in branch_pattern.split():
-        cmd.append(f"'{pat}'")
+        cmd.append(f"{pat}")
     data["jobs"]["BlockPR"]["steps"][1]["run"] = " ".join(cmd)
     with open(
         "target_repo/.github/workflows/pr_body_validator.yaml",
