@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import os
 import re
 import sys
@@ -7,6 +8,7 @@ from collections import defaultdict
 
 import requests
 from jira import Jira
+from pr_body_validatior import execute_action_based_on_branch, validate_branches
 from ruamel.yaml import YAML
 
 GH_TOKEN = os.environ.get("GH_TOKEN", None)
@@ -23,6 +25,129 @@ DEPENDENCIES = "Dependencies"
 COMPONENT_RELEASES = "Component Releases"
 JIRA_CHANGES = "Changes"
 MAIN_JIRA_LIST = ["CRP", "CPRE", "CLI", "NPIE", "PIE"]
+
+
+def execute_action_based_on_tag(prefix_tags, suffix_tags, contain_tags, tag):
+    """
+    Skips the github action in the following scenarios:
+    - if the base branch is of type provided in any of the lists
+
+    Params:
+    prefix_tags: list
+    suffix_tags: list
+    contain_tags: list
+    base_branch: str
+
+    Returns:
+    bool, bool
+    first return type gives the result if the action should be skipped or not if the prefix is '+'. If the prefix is '-' caller should reverse it and use
+    second return param indicates if the skip is because of head ref. It will be true only if the pr is revert pr or build notes gen pr
+    """
+    for pre in prefix_tags:
+        if tag.startswith(pre):
+            print(f"Matches with prefix -> {pre}")
+            return True
+    for suf in suffix_tags:
+        if tag.endswith(suf):
+            print(f"Matches with suffix -> {suf}")
+            return True
+    for pattern in contain_tags:
+        if pattern in tag:
+            print(f"Matches with pattern -> {pattern}")
+            return True
+    return False
+
+
+def validate_tag(tag_name):
+    """
+    Parse tags provided in the arguments and returns 3 lists of tags
+    prefix_tags -> format +*(tag_prefix)
+    suffix_tags -> format +(tag_suffix)*
+    contain_tags -> format +*(tag_contains_string)*
+
+    Exits if tag format doesn't start with "+" or unknown format.
+
+    Params:
+    None
+
+    Returns:
+    3 lists of tags with the provided arguments, namely:
+    prefix_tags -> list
+    suffix_tags -> list
+    contain_tags -> list
+    is_it_plus -> bool, will be True if the prefix '+', else False for '-'
+    """
+    prefix_tags, suffix_tags, contain_tags = [], [], []
+    is_it_plus = False
+    with open(
+        ".github/scripts/build_notes_configs.json", mode="r", encoding="utf-8"
+    ) as fh:
+        data = json.load(fh)
+    tags = [x.strip() for x in data["tag_pattern"].split()]
+    if not tags:
+        print("No tags provided, updating taglist")
+        return True
+    symbol = ""
+    if tags[0].startswith("+"):
+        symbol = "+"
+        is_it_plus = True
+    elif tags[0].startswith("-"):
+        symbol = "-"
+        is_it_plus = False
+    else:
+        print(f"Unknown tag format -> {tags[0]}")
+        sys.exit(1)
+    for tag in tags:
+        if not tag.startswith(symbol):
+            print(
+                f"All the tags should be starting with the same prefix: {symbol}, error -> {tag}"
+            )
+            sys.exit(1)
+        each_tag = tag[1:]  # ignore + in the beginning
+        if each_tag[0] == "*" and each_tag[-1] == "*":  # format -> +*(tag)*
+            contain_tags.append(each_tag[each_tag.find("(") + 1 : each_tag.find(")")])
+        elif each_tag[0] == "*":  # format -> +*(tag)
+            suffix_tags.append(each_tag[each_tag.find("(") + 1 : each_tag.find(")")])
+        elif each_tag[-1] == "*":  # format -> +(tag)*
+            prefix_tags.append(each_tag[each_tag.find("(") + 1 : each_tag.find(")")])
+        else:
+            print(f"Unknown tag format -> {tag}")
+            sys.exit(1)
+    # return prefix_tags, suffix_tags, contain_tags, is_it_plus
+    result = execute_action_based_on_tag(
+        prefix_tags, suffix_tags, contain_tags, tag_name
+    )
+    if not result:
+        if is_it_plus:
+            print(
+                f"{tag_name} did not match with any patterns and the prefix is '+'. Not updating taglislt."
+            )
+            return False
+    if result and not is_it_plus:
+        print(
+            f"{tag_name} matches with a pattern and the prefix is '-'. Not updating taglislt."
+        )
+        return False
+    return True
+
+
+def update_taglist(tag_name: str, base_branch: str, head_branch: str) -> bool:
+    """
+    returns if taglist should be updated based on tag name, base branch, head_branch
+    """
+    prefix_branches, suffix_branches, contain_branches, is_it_plus = validate_branches()
+    result, is_it_because_of_head_ref = execute_action_based_on_branch(
+        prefix_branches, suffix_branches, contain_branches, base_branch, head_branch
+    )
+
+    if not result:
+        if is_it_because_of_head_ref:
+            return False
+        if is_it_plus:
+            return False
+    if result and not is_it_plus:
+        return False
+    return validate_tag(tag_name)
 
 
 def cleanup_generated_yaml_data(yaml_data, date, tag, author):
@@ -388,6 +513,11 @@ def markdown_tables_to_dicts(markdown_text):
 
 
 def get_payload_for_generating_release_notes(tag, base):
+    """
+    1. returns payload for generate-notes api call
+    2. creates taglist.yaml if it doesn't exist
+    3. updates taglist.yaml if it exists
+    """
     # open taglist.yaml
     yaml = YAML()
     default_data = {"Tag List": [tag]}
@@ -396,11 +526,13 @@ def get_payload_for_generating_release_notes(tag, base):
         "target_commitish": base,
     }
     path = "taglist.yaml"
+    taglist_update = validate_tag(tag)
     data = {}
     if not os.path.exists(path) or not os.path.isfile(path):
-        print(f"{path} doesn't exist, creating ...")
-        with open(path, mode="w", encoding="utf-8") as fh:
-            yaml.dump(default_data, fh)
+        if taglist_update:
+            print(f"{path} doesn't exist, creating ...")
+            with open(path, mode="w", encoding="utf-8") as fh:
+                yaml.dump(default_data, fh)
         return payload_json, True
     with open(path, mode="r", encoding="utf-8") as fh:
         data = yaml.load(fh)
@@ -408,11 +540,12 @@ def get_payload_for_generating_release_notes(tag, base):
         try:
             last_tag = data["Tag List"][-1]
             payload_json["previous_tag_name"] = last_tag
-            data["Tag List"].append(tag)
-            yaml.dump(data, fh)
+            if taglist_update:
+                data["Tag List"].append(tag)
+                yaml.dump(data, fh)
         except Exception as e:
+            # continue with default payload even if there is exception
             print(f"falied getting last tag with error -> {e}")
-            return {}, False
     return payload_json, True
 
 
