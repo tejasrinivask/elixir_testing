@@ -9,6 +9,9 @@ on:
       branch_pattern:
         description: "Valid branch patterns for pull request validation"
         required: true
+      tag_pattern:
+        description: "Valid tag patterns for updating tag list"
+        required: true
 
 jobs:
   build-note-generator:
@@ -46,7 +49,7 @@ jobs:
           fi
           mkdir -p .github
           cp -r ../pr_and_build_notes/* .github/
-          python ../.github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}"
+          python ../.github/scripts/deploy.py "${{ github.event.inputs.branch_pattern }}" "${{ github.event.inputs.tag_pattern }}"
           git add .github/*
           git commit -m "add build notes workflow files"
           git push --set-upstream origin build-notes-deploy

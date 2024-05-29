@@ -1,3 +1,4 @@
 {
-  "branch_pattern": "+*(rc) +*(feat)* +(bug)*"
+    "branch_pattern": "+*(rc) +*(feat)* +(bug)*",
+    "tag_pattern": "+(pr-)* +(do_)*"
 }

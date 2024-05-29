@@ -2,9 +2,9 @@
 """
 Update branch pattern for pull request validator workflow
 """
-import sys
 import json
 import os
+import sys
 
 from ruamel.yaml import YAML
 
@@ -14,6 +14,7 @@ def main():
     update branch pattern for pr_body_validator workflow file
     """
     branch_pattern = sys.argv[1]
+    tag_pattern = sys.argv[2]
     curr_path = os.path.abspath(__file__)
     dir_path = os.path.dirname(curr_path)
     root_path = os.path.dirname(os.path.dirname(dir_path))
@@ -27,6 +28,7 @@ def main():
     ) as fh:
         data = json.load(fh)
     data["branch_pattern"] = branch_pattern
+    data["tag_pattern"] = tag_pattern
     with open(tgt_path, mode="w", encoding="utf-8") as fh:
         json.dump(data, fh)
 
