@@ -224,7 +224,7 @@ def main():
         try:
             event_payload = json.load(f)
         except Exception as e:
-            print("Error loading event payload, {e}")
+            print(f"Error loading event payload, {e}")
             sys.exit(1)
     if (
         not event_payload
@@ -278,7 +278,7 @@ def main():
         sys.exit(0)
     final_list = thread_execution_for_jira(jira_password, jira_list)
     if not final_list:
-        print(f"No valid jira id's, exiting ...")
+        print("No valid jira id's, exiting ...")
         sys.exit(1)
     print(f"Valid jira_list -> {final_list}")
     sys.exit(0)

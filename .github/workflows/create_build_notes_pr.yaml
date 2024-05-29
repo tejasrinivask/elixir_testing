@@ -32,11 +32,17 @@ jobs:
           git config --local user.email "collaborate@amagi.com"
           git config --local user.name "amagi-collaborate"
           git switch $BASE_BRANCH
-          git switch -c $BUILD_NOTES_PR
+          existed_in_remote=$(git ls-remote --heads origin $BUILD_NOTES_PR)
+          if [[ -z ${existed_in_remote} ]]; then
+            git switch -c $BUILD_NOTES_PR
+          else
+            git switch $BUILD_NOTES_PR
+            git pull
+          fi
           # call script for build notes generation
           python ./.github/scripts/create_build_notes.py "$GIT_REPO" "$BASE_BRANCH" "$TAG_NAME" "$DATE"
           # push the changes
-          git add build_notes.yaml taglist.yaml
+          find . -type d -name '__pycache__' -prune -o -type f -print0 | xargs -0 git add
           git commit -m "Auto commit"
           git push --set-upstream origin $BUILD_NOTES_PR
           # create pr
