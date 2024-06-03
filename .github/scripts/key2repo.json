@@ -1,0 +1,7 @@
+{
+  "dockerImages": {
+    "elixirTestingImage": "tejasrinivask/elixir_testing",
+    "newWorkflowImage": "tejasrinivask/new_workflow",
+    "buildNotesImage": "tejasrinivask/build_notes"
+  }
+}

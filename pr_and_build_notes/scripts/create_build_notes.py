@@ -9,6 +9,7 @@ from collections import defaultdict
 import requests
 from jira import Jira
 from pr_body_validatior import execute_action_based_on_branch, validate_branches
+from merge_build_notes import MergeBuildNotes
 from ruamel.yaml import YAML
 
 GH_TOKEN = os.environ.get("GH_TOKEN", None)
@@ -601,6 +602,24 @@ def main():
             pr_list.append(res[1])
     print(f"pr list -> {pr_list}")
     create_release_files_with_pr_list(pr_list, DATE, CURRENT_TAG, GIT_REPO)
+    # merge sub component build notes
+    if not os.path.isfile("releases.yaml") or not os.path.isfile(
+        ".github/scripts/key2repo.json"
+    ):
+        print(
+            "Skipping build notes merge as either releases.yaml or .github/scripts/key2repo.json doesn't exist"
+        )
+        return
+    yaml = YAML()
+    obj = MergeBuildNotes(CURRENT_TAG)
+    if not obj.rls_data:
+        # if releses.yaml data is empty
+        return
+    sub_components = obj.get_sub_components()
+    final_data = obj.merge_sub_components(sub_components)
+    final_dumpable_data = final_data.custom_to_actual()
+    with open("build_notes.yaml", mode="w", encoding="utf-8") as fh:
+        yaml.dump(final_dumpable_data, fh)
 
 
 if __name__ == "__main__":

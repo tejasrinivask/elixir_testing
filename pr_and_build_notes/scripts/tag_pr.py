@@ -44,6 +44,7 @@ def update_release(repo_full_name, release_id, new_body, access_token):
 
 
 def get_release_body_from_build_notes():
+    org = "tejasrinivask"
     yaml = YAML()
     body = "### Jira Changes\n"
     body += "| Jira ID | PR | Type | Description |\n"
@@ -52,7 +53,10 @@ def get_release_body_from_build_notes():
         with open("build_notes.yaml", mode="r", encoding="utf-8") as fh:
             data = yaml.load(fh)
         for each_entry in data["BuildNotes"]["Changes"]:
-            pr_list = [f"#{x.strip()}" for x in each_entry["pr"].split(",")]
+            pr_list = []
+            for x in each_entry("pr", "").split(","):
+                if x:
+                    pr_list.append(f"#{x.strip()}")
             final_pr_str = ", ".join(pr_list)
             body += f"| https://amagiengg.atlassian.net/browse/{each_entry['JiraID']} | {final_pr_str} | {each_entry['type']} | {each_entry['description']} |\n"
     except Exception as e:

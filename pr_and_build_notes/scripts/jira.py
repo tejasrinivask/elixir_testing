@@ -17,11 +17,6 @@ class Jira:
     def __init__(self, token):
         self.token = token
         self.url = "https://amagiengg.atlassian.net/rest/api/latest/issue"
-        # self.default_payload = {
-        #     "fields": {
-        #         "customfield_12090": "||Changed Component Name, In case code change is needed| |\n||What are the steps to reproduce this issue?| |\n||Are there any features likely to be impacted? If so, what are the features and what is impact?| |\n||How can this change be tested? Is there any additional tests to be done other than bug fix validation?| |\n||Should this fix be considered for LTS Release?| Yes / No | |\n||Is the fix for this issue available in any of the latest CP releases?| |",
-        #     }
-        # }
         self.default_payload = {
             "fields": {
                 "customfield_12562": "||Changed Component Name, In case code change is needed| |\n||What are the steps to reproduce this issue?| |\n||Are there any features likely to be impacted? If so, what are the features and what is impact?| |\n||How can this change be tested? Is there any additional tests to be done other than bug fix validation?| |\n||Should this fix be considered for LTS Release?| Yes / No | |\n||Is the fix for this issue available in any of the latest CP releases?| |",
@@ -51,20 +46,20 @@ class Jira:
             "Content-Type": "application/json",
             "Authorization": f"Basic {self.token}",
         }
+        # fields.customfield_12562 -> Dev Update
         payload = {
             "fields": {
                 "customfield_12562": payload,
             }
         }
-        # print(payload)
         # Send the PUT request
         response = requests.put(url, headers=headers, data=json.dumps(payload))
         # Check response status
         if response.status_code == 204:
-            print("Custom field updated successfully")
+            print(f"Custom field updated successfully for {issue_key}")
         else:
             print(
-                f"Failed to update custom field. Status code: {response.status_code}, Error: {response.text}"
+                f"Failed to update custom field for {issue_key}. Status code: {response.status_code}, Error: {response.text}"
             )
 
     def payload_str_to_dict(

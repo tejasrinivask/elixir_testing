@@ -4,13 +4,9 @@ charts:
   - chartName: cp-automation-resources
     chartVersion: v0.1.5
 dockerImages:
-  blipImage: cp/automation/blip:v8.8.0
-  tinkerImage: cp/automation/tinker:v7.7.35
-  sentinelImage: cp/automation/sentinel:v1.11.7
-  dynamiteImage: cp/automation/dynamite:v2.0.10
-  resourcesImage: cp/automation/automation-resources:v0.1.5
-  karmaImage: cp/karma/workflow:v5.2.0
-  paalakaImage: cp/cplive/paalaka:v2.0.14
+  elixirTestingImage: tejasrinivask/elixir_testing:fr-test-v1
+  newWorkflowImage: tejasrinivask/new_workflow:pr-0.0.2
+  buildNotesImage: tejasrinivask/build_notes:fr-test-v3
 serverless:
   xmorphImage: amagimedia/xmorph:onb_v5.0.3014
   mapsorImage: amagimedia/iammapsor:v0.16.5
