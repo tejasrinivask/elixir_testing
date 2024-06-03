@@ -1,11 +1,11 @@
 {
   "dockerImages": {
-    "blipImage": "https://github.com/amagimedia/blip",
-    "tinkerImage": "https://github.com/amagimedia/tinker",
-    "sentinelImage": "https://github.com/amagimedia/skynet",
-    "dynamiteImage": "https://github.com/amagimedia/dynamite",
-    "resourcesImage": "https://github.com/amagimedia/automation-resources",
-    "karmaImage": "https://github.com/amagimedia/karma",
-    "paalakaImage": "https://github.com/amagimedia/paalaka"
+    "blipImage": "amagimedia/blip",
+    "tinkerImage": "amagimedia/tinker",
+    "sentinelImage": "amagimedia/skynet",
+    "dynamiteImage": "amagimedia/dynamite",
+    "resourcesImage": "amagimedia/automation-resources",
+    "karmaImage": "amagimedia/karma",
+    "paalakaImage": "amagimedia/paalaka"
   }
 }
