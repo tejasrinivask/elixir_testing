@@ -11,6 +11,6 @@ outputs:
     description: "The time we greeted you"
 runs:
   using: "docker"
-  image: ".github/actions/action2/Dockerfile"
+  image: "Dockerfile"
   args:
     - ${{ inputs.who-to-greet }}
